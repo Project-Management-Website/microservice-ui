@@ -28,6 +28,10 @@
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul>
   </div>
+  <div class="card flex justify-content-center">
+        <Button-prime label="Check" icon="pi pi-check" />
+    </div>
+
 </template>
 
 <script>
