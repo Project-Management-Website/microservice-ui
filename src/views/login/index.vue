@@ -1,19 +1,29 @@
 <template>
-    <div class="login-container">
-      <div class="login-card">
-        <h1>Login</h1>
-        <form @submit.prevent="login">
-          <div class="p-field">
-            <label for="username">Username</label>
-            <pr-inputText v-model="username" id="username" />
-          </div>
-          <div class="p-field">
-            <label for="password">Password</label>
-            <pr-password v-model="password" id="password" />
-          </div>
-          <pr-button type="submit" label="Login" class="mybutton" />
-        </form>
-      </div>
+    <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
+        <div class="text-center mb-5">
+            <img src="../../assets/iamge.png" alt="Image" height="50" class="mb-3" />
+            <div class="text-900 text-3xl font-medium mb-3">Welcome Back</div>
+            <span class="text-600 font-medium line-height-3">Don't have an account?</span>
+            <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Create today!</a>
+        </div>
+
+        <div>
+            <label for="email1" class="block text-900 font-medium mb-2">Email</label>
+            <pr-inputText id="email1" type="text" placeholder="Email address" class="w-full mb-3" />
+
+            <label for="password1" class="block text-900 font-medium mb-2">Password</label>
+            <pr-inputText id="password1" type="password" placeholder="Password" class="w-full mb-3" />
+
+            <div class="flex align-items-center justify-content-between mb-6">
+                <div class="flex align-items-center">
+                    <Checkbox id="rememberme1" :binary="true" v-model="checked1" class="mr-2"></Checkbox>
+                    <label for="rememberme1">Remember me</label>
+                </div>
+                <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a>
+            </div>
+
+            <pr-button label="Sign In" icon="pi pi-user" class="w-full"></pr-button>
+        </div>
     </div>
   </template>
   
@@ -34,21 +44,4 @@
   };
   </script>
   
-  <style scoped>
-  .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .login-card {
-    width: 300px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  @import 'primeflex/primeflex.css';
-  .mybutton {
-    @include styleclass('bg-blue-500 hover:bg-blue-600 border-round transition-colors transition-duration-150 p-3 border-none');
-}
-  </style>
   
