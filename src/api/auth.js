@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function loginUser(data) {
+export async function loginUser(data) {
     const apiURL = process.env.APP_AUTH_API || 'http://localhost:3000'
     const url = apiURL + '/user/login'
   

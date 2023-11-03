@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-content-center w-full h-full">
-    <div class="p-4 shadow-2 border-round lg:w-4">
-      <div class="text-center mb-5">
+    <div class="mt-8 p-4 shadow-2 border-round lg:w-4">
+      <div class="text-center mb-7 mt-3">
         <img src="../../assets/logo.png" alt="Image" height="50" class="mb-3" />
         <div class="text-900 text-3xl mb-3">Welcome Back</div>
         <span class="text-600 line-height-3">Don't have an account?</span>
@@ -39,15 +39,18 @@
     },
     methods: {
       async handleLogin() {
-        try {
-        await loginUser(this.loginForm)
+      try {
+        const data = await loginUser(this.loginForm);
+        console.log(data)
 
-        this.$router.push({ path: '/dashboard' })
+        this.$router.push({ path: "/dashboard" })
       } catch (error) {
-        console.log(error)
+          if (error.response) {
+            this.$toast.add({ severity: 'error', summary: 'Error', detail: `${error.response.data.message}`, life: 3000 });
+          }
       }},
     }
   };
   </script>
-  
-  
+    
+    

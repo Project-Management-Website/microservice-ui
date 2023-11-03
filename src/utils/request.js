@@ -1,3 +1,4 @@
+import router from "@/router";
 import axios from "axios";
 
 const service = axios.create({
@@ -5,15 +6,17 @@ const service = axios.create({
     timeout: 60 * 1000,
   })
 
-service.interceptors.request.use(
-  config => {
-    
-    return config
+service.interceptors.response.use(
+  response => {
+    return response.data
   },
   error => {
-    console.log(error)
-    return Promise.reject(error)
+    if (error.response.status === 401) {
+      router.push({ name: 'Login' })
+    } else {
+      return Promise.reject(error)
+    }
   }
 )
 
-  export default service
+export default service
