@@ -13,6 +13,12 @@ const routes = [
         hidden: true,
         name: 'Dashboard',
     },
+    {
+        path: '/test',
+        component: () => import('@/views/test/index'),
+        hidden: true,
+        name: 'Test',
+    },
 ]
 
 const router = createRouter({

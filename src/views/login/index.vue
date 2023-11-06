@@ -1,6 +1,7 @@
 <template>
-  <div class="flex justify-content-center w-full h-full">
-    <div class="mt-8 p-4 shadow-2 border-round lg:w-4">
+  <div class="surface-0 flex align-self-center justify-content-center w-full h-full overflow-visible">
+    <pr-toast/>
+    <div class="p-4 shadow-2 border-round lg:w-4 ">
       <div class="text-center mb-7 mt-3">
         <img src="../../assets/logo.png" alt="Image" height="50" class="mb-3" />
         <div class="text-900 text-3xl mb-3">Welcome Back</div>
@@ -24,33 +25,33 @@
   </div>
 </template>
   
-  <script>
-  import { loginUser } from "@/api/auth"
+<script>
+import { loginUser } from "@/api/auth"
 
-  export default {
-    name: 'login-form',
-    data() {
-      return {
-        loginForm: {
-          username: '',
-          password: '',
-        },
-      };
-    },
-    methods: {
-      async handleLogin() {
-      try {
-        const data = await loginUser(this.loginForm);
-        console.log(data)
+export default {
+  name: 'login-form',
+  data() {
+    return {
+      loginForm: {
+        username: '',
+        password: '',
+      },
+    };
+  },
+  methods: {
+    async handleLogin() {
+    try {
+      const data = await loginUser(this.loginForm);
+      console.log(data)
 
-        this.$router.push({ path: "/dashboard" })
-      } catch (error) {
-          if (error.response) {
-            this.$toast.add({ severity: 'error', summary: 'Error', detail: `${error.response.data.message}`, life: 3000 });
-          }
-      }},
-    }
-  };
-  </script>
+      this.$router.push({ path: "/dashboard" })
+    } catch (error) {
+        if (error.response) {
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: `${error.response.data.message}`, life: 3000 });
+        }
+    }},
+  }
+};
+</script>
     
     
