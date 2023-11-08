@@ -9,17 +9,21 @@
         <a class="no-underline ml-2 text-blue-500 cursor-pointer">Create today!</a>
       </div>
       <div>
-        <label class="flex align-content-start text-900 mb-2">Email</label>
-        <pr-inputText ref="username" v-model="loginForm.username" type="text" placeholder="Email address" class="w-full mb-3" />
-        
-        <label class="flex align-content-start text-900 mb-2">Password</label>
-        <pr-inputText ref="password" v-model="loginForm.password" type="password" placeholder="Password" class="w-full mb-3" />
+        <form @submit="onSubmit">
+          <label class="flex align-content-start text-900 mb-2">Username</label>
+          <pr-inputText v-model="username" :class="{ 'p-invalid': errors.username }" type="text" placeholder="Email address" class="w-full" />
+          <small class="p-error mb-2" id="text-error">{{ errors.username || '&nbsp;' }}</small>
+          
+          <label class="flex align-content-start text-900 mb-2">Password</label>
+          <pr-inputText v-model="password" type="password" placeholder="Password" class="w-full" />
+          <small class="p-error mb-2" id="text-error">{{ errors.password || '&nbsp;' }}</small>
 
-        <div class="flex align-items-center justify-content-between mb-6">
-          <a class="no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a>
-        </div>
+          <div class="flex align-items-center justify-content-between mb-6">
+            <a class="no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a>
+          </div>
 
-        <pr-button @click="handleLogin" label="Sign In" class="w-full"></pr-button>
+          <pr-button type="submit" label="Sign In" class="w-full"></pr-button>
+        </form>
       </div>
     </div>
   </div>
@@ -27,30 +31,88 @@
   
 <script>
 import { loginUser } from "@/api/auth"
+import { setToken } from "@/utils/auth"
+// import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useToast } from "primevue/usetoast"
+import { useField, useForm } from 'vee-validate';
+import { toTypedSchema } from '@vee-validate/zod';
+import * as zod from 'zod';
 
 export default {
   name: 'login-form',
-  data() {
-    return {
-      loginForm: {
+  setup() {
+    const router = useRouter()
+    const toast = useToast()
+
+    const loginForm = {
         username: '',
         password: '',
-      },
-    };
-  },
-  methods: {
-    async handleLogin() {
-    try {
-      const data = await loginUser(this.loginForm);
-      console.log(data)
+    }
 
-      this.$router.push({ path: "/dashboard" })
-    } catch (error) {
-        if (error.response) {
-          this.$toast.add({ severity: 'error', summary: 'Error', detail: `${error.response.data.message}`, life: 3000 });
-        }
-    }},
-  }
+    const validationSchema = toTypedSchema(
+      zod.object({
+        username: zod.string().nonempty('This field is required'),
+        password: zod.string().nonempty('This field is required').min(6, { message: 'Too short' }),
+      })
+    );
+
+    const { handleSubmit, errors } = useForm({
+      validationSchema,
+    })
+
+    async function handleLogin() {
+      try {
+        loginForm.username = username.value;
+        loginForm.password = password.value;
+        console.log(loginForm)
+        const data = await loginUser(loginForm);
+        setToken(data.token);
+        console.log(data)
+
+        router.push({ path: "/dashboard" })
+      } catch (error) {
+          if (error.response) {
+            toast.add({ severity: 'error', summary: 'Error', detail: `${error.response.data.message}`, life: 3000 });
+          }
+      }
+    }
+
+    const { value: username } = useField('username');
+    const { value: password } = useField('password');
+
+    const onSubmit = handleSubmit(() => {
+      handleLogin();
+    })
+    return {
+      onSubmit,
+      errors,
+      username,
+      password
+    }
+  },
+  // data() {
+  //   return {
+  //     loginForm: {
+  //       username: '',
+  //       password: '',
+  //     },
+  //   };
+  // },
+  // methods: {
+  //   async handleLogin() {
+  //   try {
+  //     const data = await loginUser(this.loginForm);
+  //     setToken(data.token);
+  //     console.log(data)
+
+  //     this.$router.push({ path: "/dashboard" })
+  //   } catch (error) {
+  //       if (error.response) {
+  //         this.$toast.add({ severity: 'error', summary: 'Error', detail: `${error.response.data.message}`, life: 3000 });
+  //       }
+  //   }},
+  // }
 };
 </script>
     

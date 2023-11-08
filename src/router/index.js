@@ -1,4 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router"
+import { getToken } from "@/utils/auth";
 
 const routes = [
     {
@@ -6,6 +7,14 @@ const routes = [
         component: () => import('@/views/login/index'),
         hidden: true,
         name: 'Login',
+        beforeEnter: (to, from, next) => {
+            const token = getToken()
+      
+            if (token) {
+              next({ name: 'Dashboard' });
+            } else {
+              next();
+            }}
     },
     {
         path: '/dashboard',

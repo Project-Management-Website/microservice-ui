@@ -1,10 +1,22 @@
 import router from "@/router";
 import axios from "axios";
+import { getToken } from "./auth";
 
 const service = axios.create({
-    withCredentials: true,
+    withCredentials: false,
     timeout: 60 * 1000,
-  })
+})
+
+service.interceptors.request.use(
+  config => {
+    config.headers['jwt-Token'] = getToken()
+    return config
+  },
+  error => {
+    console.log(error)
+    return Promise.reject(error)
+  }
+)
 
 service.interceptors.response.use(
   response => {
