@@ -28,6 +28,18 @@ const routes = [
         hidden: true,
         name: 'Test',
     },
+    {
+        path: '/task',
+        component: () => import('@/views/task/list'),
+        hidden: true,
+        name: 'Task',
+    },
+    {
+        path: '/task/:uuid',
+        component: () => import('@/views/task/detail'),
+        hidden: true,
+        name: 'Task_detail',
+    },
 ]
 
 const router = createRouter({

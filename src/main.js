@@ -17,6 +17,13 @@ import Divider from 'primevue/divider';
 import TabMenu from 'primevue/tabmenu';
 import DataView from 'primevue/dataview';
 import Card from 'primevue/card';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Row from 'primevue/row';
+import Tag from 'primevue/tag';
+import Splitter from 'primevue/splitter';
+import SplitterPanel from 'primevue/splitterpanel';
+import Textarea from 'primevue/textarea';
 
 const app = createApp(App)
 
@@ -32,6 +39,13 @@ app.component('pr-divider', Divider)
 app.component('pr-tabMenu', TabMenu)
 app.component('pr-dataView', DataView)
 app.component('pr-card', Card)
+app.component('pr-dataTable', DataTable)
+app.component('pr-column', Column)
+app.component('pr-row', Row)
+app.component('pr-tag', Tag)
+app.component('pr-splitter', Splitter)
+app.component('pr-splitterPanel', SplitterPanel)
+app.component('pr-textArea', Textarea)
 
 app.use(router)
 
