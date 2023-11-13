@@ -14,9 +14,21 @@ export async function getListTask(data) {
 export async function getDetailTask(uuid) {
   const apiURL = process.env.APP_PROJECT_API || 'http://localhost:3001'
   const url = apiURL + '/task/' + uuid
-  console.log(url)
+
   return request({
     url,
     method: 'get',
+  })
+}
+
+export async function updateDetailTask(data, uuid) {
+  const apiURL = process.env.APP_PROJECT_API || 'http://localhost:3001'
+  const url = apiURL + '/task/' + uuid
+
+  console.log(data)
+  return request({
+    url,
+    method: 'put',
+    data
   })
 }

@@ -39,10 +39,9 @@ onMounted(async () => {
     }
 });
 
-const paramss = "dasdasdsad"
-
-const onRowSelect = () => {
-    router.push({ name: "Task_detail", params: { uuid: paramss } })
+const onRowSelect = (event) => {
+    const params = event.data.uuid
+    router.push({ name: "Task_detail", params: { uuid: params } })
 }
 
 </script>

@@ -1,37 +1,76 @@
  <template>
-    <div class="flex justify-content-center mt-8">
-        <div class="p-4 shadow-2 border-round lg:w-6 ">
-            <label class="field grid font-bold text-4xl capitalize">sdada{{ name }}</label>
-            <label class="field grid">{{ task.created_at }}</label>
-            <label class="field grid" >Due date: {{ task.due_date }}</label>
-            <label class="field grid">Assignee: {{ task.assignee }}</label>
-            <label class="field grid">Status: {{ task.status }}</label>
-            <label class="field grid">Priority: {{ task.priority }}</label>
-            <textArea class="field grid" v-model="task.description"></textArea>
-        </div>
+    <div class="flex justify-content-center">
+        <div class="card shadow-2 indigo-300 p-4 border-round m-5">
+            <div class="p-fluid formgrid grid">
+                <div class="field col-12 md:col-12 ">
+                    <label>Name</label>
+                    <pr-inputText v-model="task.title" type="text"/>
+                </div>
+                <div class="field col-12 md:col-6 ">
+                    <label>Created at</label>
+                    <pr-inputText v-model="task.created_at" type="text" disabled/>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label>Due</label>
+                    <pr-inputText v-model="task.due_date" type="text"/>
+                </div>
+                <div class="field col-12">
+                    <label>Description</label>
+                    <pr-textArea v-model="task.description" rows="4"/>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label>Assignee</label>
+                    <pr-inputText v-model="task.assignee_uuid" type="text" />
+                </div>
+                <div class="field col-12 md:col-3">
+                    <label>Status</label>
+                    <pr-dropDown v-model="task.status" :options="dropdownItems" optionLabel="name"></pr-dropDown>
+                </div>
+                <div class="field col-12 md:col-3">
+                    <label>Priority</label>
+                    <pr-inputText v-model="task.priority" type="text"/>
+                </div>
+                <div class="field md:col-1 col-offset-11">
+                    <pr-button @click="updateTask" label="submit"></pr-button>
+                </div>
+			</div>
+		</div>
     </div>
 </template>
 
 <script setup>
-import { getDetailTask } from '@/api/task'
-//import { useRouter } from 'vue-router';
+import { getDetailTask, updateDetailTask } from '@/api/task'
+import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 
-let task = ref({
-    description: "",
-    name: "",
-    status: "",
-})
-
+const route = useRoute()
+const router = useRouter()
+let task = ref({})
+let dropdownItems = ref([
+					{name: 'To do', code: 'TD'},
+					{name: 'In progress', code: 'IP'},
+					{name: 'Done', code: 'D'}
+				],
+)
 onMounted(async () => {
     try {
-        const temptask = await getDetailTask("bac9aeac-24e1-4fa9-9bae-d09df842ecb7")
-        task = temptask.user
-        console.log(task)
+        const param = route.params.uuid
+        const temptask = await getDetailTask(param)
+        task.value = temptask.task
     } catch (err) {
         console.log(err)
     }
 });
+
+async function updateTask() {
+    try {
+        const updatedTask = await updateDetailTask(task.value, route.params.uuid)
+
+        router.push({ name: "Task_List"})
+    } catch(err) {
+        console.log(err)
+    }
+}
 
 </script>
 

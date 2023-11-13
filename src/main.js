@@ -24,6 +24,8 @@ import Tag from 'primevue/tag';
 import Splitter from 'primevue/splitter';
 import SplitterPanel from 'primevue/splitterpanel';
 import Textarea from 'primevue/textarea';
+import Dropdown from 'primevue/dropdown';
+import ProgressSpinner from 'primevue/progressspinner';
 
 const app = createApp(App)
 
@@ -46,6 +48,8 @@ app.component('pr-tag', Tag)
 app.component('pr-splitter', Splitter)
 app.component('pr-splitterPanel', SplitterPanel)
 app.component('pr-textArea', Textarea)
+app.component('pr-dropDown', Dropdown)
+app.component('pr-progSpinner', ProgressSpinner)
 
 app.use(router)
 

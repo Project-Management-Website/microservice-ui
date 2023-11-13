@@ -32,7 +32,7 @@ const routes = [
         path: '/task',
         component: () => import('@/views/task/list'),
         hidden: true,
-        name: 'Task',
+        name: 'Task_List',
     },
     {
         path: '/task/:uuid',
