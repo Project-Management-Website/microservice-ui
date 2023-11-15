@@ -1,6 +1,9 @@
 
 <template>
-    <div class="card mt-6">
+    <div class="flex flex-row-reverse mx-5 mt-4 ">
+        <pr-button @click="createTask" label="Create task"></pr-button>
+    </div>
+    <div class="card mt-4">
         <pr-dataTable :value="tasks" paginator :rows="10" filterDisplay="row" :loading="loading" class="mx-5" selectionMode="single" @rowSelect="onRowSelect">
             <template #header>
                 <div class="flex justify-content-end">
@@ -41,7 +44,11 @@ onMounted(async () => {
 
 const onRowSelect = (event) => {
     const params = event.data.uuid
-    router.push({ name: "Task_detail", params: { uuid: params } })
+    router.push({ name: "Edit_Task", params: { uuid: params } })
+}
+
+function createTask () {
+    router.push({ name: "Create_Task" })
 }
 
 </script>

@@ -25,10 +25,20 @@ export async function updateDetailTask(data, uuid) {
   const apiURL = process.env.APP_PROJECT_API || 'http://localhost:3001'
   const url = apiURL + '/task/' + uuid
 
-  console.log(data)
   return request({
     url,
     method: 'put',
+    data
+  })
+}
+
+export async function createTask(data) {
+  const apiURL = process.env.APP_PROJECT_API || 'http://localhost:3001'
+  const url = apiURL + '/task'
+  
+  return request({
+    url,
+    method: 'post',
     data
   })
 }

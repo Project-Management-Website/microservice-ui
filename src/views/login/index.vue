@@ -6,7 +6,7 @@
         <img src="../../assets/logo.png" alt="Image" height="50" class="mb-3" />
         <div class="text-900 text-3xl mb-3">Welcome Back</div>
         <span class="text-600 line-height-3">Don't have an account?</span>
-        <a class="no-underline ml-2 text-blue-500 cursor-pointer">Create today!</a>
+        <a href="http://localhost:8080/register" class="no-underline ml-2 text-blue-500 cursor-pointer">Create today!</a>
       </div>
       <div>
         <form @submit="onSubmit">
@@ -40,7 +40,7 @@ import { toTypedSchema } from '@vee-validate/zod';
 import * as zod from 'zod';
 
 export default {
-  name: 'login-form',
+  name: 'login_form',
   setup() {
     const router = useRouter()
     const toast = useToast()

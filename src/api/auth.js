@@ -20,4 +20,13 @@ export function findUser(uuid) {
       method: 'get',
     })
 }
-  
+
+export function register(data) {
+  const apiURL = process.env.APP_AUTH_API || 'http://localhost:3000'
+  const url = apiURL + '/user/register'
+  return request({
+    url,
+    method: 'post',
+    data,
+  })
+}

@@ -26,6 +26,7 @@ import SplitterPanel from 'primevue/splitterpanel';
 import Textarea from 'primevue/textarea';
 import Dropdown from 'primevue/dropdown';
 import ProgressSpinner from 'primevue/progressspinner';
+import Calendar from 'primevue/calendar';
 
 const app = createApp(App)
 
@@ -50,6 +51,7 @@ app.component('pr-splitterPanel', SplitterPanel)
 app.component('pr-textArea', Textarea)
 app.component('pr-dropDown', Dropdown)
 app.component('pr-progSpinner', ProgressSpinner)
+app.component('pr-calendar', Calendar)
 
 app.use(router)
 

@@ -17,6 +17,20 @@ const routes = [
             }}
     },
     {
+        path: '/register',
+        component: () => import('@/views/register/index'),
+        hidden: true,
+        name: 'Register',
+        beforeEnter: (to, from, next) => {
+            const token = getToken()
+      
+            if (token) {
+              next({ name: 'Dashboard' });
+            } else {
+              next();
+            }}
+    },
+    {
         path: '/dashboard',
         component: () => import('@/views/dashboard/index'),
         hidden: true,
@@ -36,9 +50,15 @@ const routes = [
     },
     {
         path: '/task/:uuid',
-        component: () => import('@/views/task/detail'),
+        component: () => import('@/views/task/edit'),
         hidden: true,
-        name: 'Task_detail',
+        name: 'Edit_Task',
+    },
+    {
+        path: '/task/create',
+        component: () => import('@/views/task/create'),
+        hidden: true,
+        name: 'Create_Task',
     },
 ]
 
