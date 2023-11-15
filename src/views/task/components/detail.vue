@@ -28,11 +28,11 @@
 
                 <div class="field col-12 md:col-3">
                     <label>Status</label>
-                    <pr-dropDown v-model="task.status" :options="dropdownItems" optionLabel="name"></pr-dropDown>
+                    <pr-dropDown v-model="task.status" :options="dropdownStatuses" optionLabel="name" optionValue="name"></pr-dropDown>
                 </div>
                 <div class="field col-12 md:col-3">
                     <label>Priority</label>
-                    <pr-inputText v-model="task.priority" type="text"/>
+                    <pr-dropDown v-model="task.priority" :options="dropdownPriorities" optionLabel="name" optionValue="name"></pr-dropDown>
                 </div>
                 <div class="field md:col-1 col-offset-11">
                     <pr-button @click="onSubmit" label="submit"></pr-button>
@@ -57,12 +57,19 @@ const props = defineProps(['isEdit'])
 
 
 let task = ref({})
-let dropdownItems = ref([
-					{name: 'To do', code: 'TD'},
-					{name: 'In progress', code: 'IP'},
-					{name: 'Done', code: 'D'}
-				],
+const dropdownStatuses = ref([
+        {name: 'To do'},
+        {name: 'In progress'},
+        {name: 'Done'}
+    ],
 )
+const dropdownPriorities = ref([
+        {name: 'low'},
+        {name: 'medium'},
+        {name: 'high'}
+    ],
+)
+
 onMounted(async () => {
     if (props.isEdit) {
         try {
