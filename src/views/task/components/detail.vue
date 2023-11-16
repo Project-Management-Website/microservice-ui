@@ -8,7 +8,7 @@
                 </div>
                 <div class="field md:col-6">
                     <label>Assignee</label>
-                    <pr-inputText v-model="task.assignee_uuid" type="text" />
+                    <pr-dropDown v-model="task.assignee_uuid" :options="dropdownUsers" optionLabel="username" optionValue="username"/>
                 </div>
                 <div class="field md:col-6">
 
@@ -34,8 +34,8 @@
                     <label>Priority</label>
                     <pr-dropDown v-model="task.priority" :options="dropdownPriorities" optionLabel="name" optionValue="name"></pr-dropDown>
                 </div>
-                <div class="field md:col-1 col-offset-11">
-                    <pr-button @click="onSubmit" label="submit"></pr-button>
+                <div class="field md:col-2 col-offset-10">
+                    <pr-button @click="onSubmit" label="Submit"></pr-button>
                 </div>
 			</div>
 		</div>
@@ -47,6 +47,7 @@
 
 <script setup>
 import { getDetailTask, updateDetailTask, createTask } from '@/api/task'
+import { getListUsers } from '@/api/auth'
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref, defineProps } from 'vue';
 
@@ -69,6 +70,7 @@ const dropdownPriorities = ref([
         {name: 'high'}
     ],
 )
+let dropdownUsers = ref([])
 
 onMounted(async () => {
     if (props.isEdit) {
@@ -80,20 +82,19 @@ onMounted(async () => {
             console.log(err)
         }
     }
+    const users = await getListUsers()
+    dropdownUsers.value = users.items;
 });
 
 async function onSubmit() {
     try {
         const taskForm = {
             ...task.value,
-            status: task.value.status.name,
             due_date: new Date(task.value.due_date)
         }
         if (props.isEdit) {
-            console.log(props.isEdit)
             const task = await updateDetailTask(taskForm, route.params.uuid)
         } else {
-            console.log(props.isEdit)
             const task = await createTask(taskForm)
         }
         

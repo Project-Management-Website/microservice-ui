@@ -27,6 +27,8 @@ import Textarea from 'primevue/textarea';
 import Dropdown from 'primevue/dropdown';
 import ProgressSpinner from 'primevue/progressspinner';
 import Calendar from 'primevue/calendar';
+import Menu from 'primevue/menu';
+import BadgeDirective from 'primevue/badgedirective';
 
 const app = createApp(App)
 
@@ -52,6 +54,9 @@ app.component('pr-textArea', Textarea)
 app.component('pr-dropDown', Dropdown)
 app.component('pr-progSpinner', ProgressSpinner)
 app.component('pr-calendar', Calendar)
+app.component('pr-menu', Menu)
+
+app.directive('badge', BadgeDirective);
 
 app.use(router)
 

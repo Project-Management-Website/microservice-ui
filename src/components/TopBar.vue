@@ -6,6 +6,18 @@
                     <img alt="logo" src="https://primefaces.org/cdn/primevue/images/primevue-logo-dark.svg" height="24" class="mr-2" />
                 </span>
             </template>
+            <template #end>
+                <div v-if="!isLoggedIn" class="mr-4">
+                    <router-link to="/login" class="mr-2">Login</router-link>
+                    <router-link to="/register">Register</router-link>
+                </div>
+                <div v-else class="flex mr-4">
+                    <div class="card flex justify-content-center">
+                        <pr-button icon="pi pi-user"  @click="toggleMenu" aria-haspopup="true" aria-controls="overlay_menu" outlined rounded/>
+                        <pr-menu ref="menu" id="overlay_menu" :model="profileMenu" :popup="true" />
+                    </div>
+                </div>
+            </template>
             <template #item="{ label, item, props, hasSubmenu }">
                 <router-link v-if="item.route" v-slot="routerProps" :to="item.route" custom>
                     <a :href="routerProps.href" v-bind="props.action">
@@ -24,68 +36,68 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { getToken } from "@/utils/auth";
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router"
+
+const router = useRouter()
+
+const menu = ref();
+const profileMenu = ref([
+    {
+        label: 'Account',
+        items: [
+            {
+                label: 'profile',
+                icon: 'pi pi-user-edit'
+            },
+            {
+                label: 'Log out',
+                icon: 'pi pi-sign-out'
+            }
+        ]
+    }
+]);
+
+const toggleMenu = (event) => {
+    menu.value.toggle(event);
+};
 
 const items = ref([
     {
         label: 'Dashboard',
         icon: 'pi pi-fw pi-server',
-        items: [
-            [
-                {
-                    label: 'Video 1',
-                    items: [{ label: 'Video 1.1' }, { label: 'Video 1.2' }]
-                },
-                {
-                    label: 'Video 2',
-                    items: [{ label: 'Video 2.1' }, { label: 'Video 2.2' }]
-                }
-            ],
-        ]
+        command: () => {
+            router.push({ name: 'Dashboard' })
+        }
     },
     {
-        label: 'Projects',
+        label: 'Project',
         icon: 'pi pi-fw pi-box',
-        items: [
-            [
-                {
-                    label: 'User 1',
-                    items: [{ label: 'User 1.1' }, { label: 'User 1.2' }]
-                },
-                {
-                    label: 'User 2',
-                    items: [{ label: 'User 2.1' }, { label: 'User 2.2' }]
-                }
-            ],
-        ]
+        command: () => {
+            router.push({ name: "Task_List" })
+        }
     },
     {
         label: 'Teams',
         icon: 'pi pi-fw pi-users',
-        items: [
-            [
-                {
-                    label: 'Event 1',
-                    items: [{ label: 'Event 1.1' }, { label: 'Event 1.2' }]
-                },
-                {
-                    label: 'Event 2',
-                    items: [{ label: 'Event 2.1' }, { label: 'Event 2.2' }]
-                }
-            ],
-        ]
+        
     },
     {
         label: 'Settings',
         icon: 'pi pi-fw pi-cog',
-        items: [
-            [
-                {
-                    label: 'Setting 1',
-                    items: [{ label: 'Setting 1.1' }, { label: 'Setting 1.2' }]
-                },
-            ],
-        ]
+        
     },
 ]);
+const isLoggedIn = ref()
+
+onMounted(async () => {
+    const token = getToken();
+    if(token) {
+        isLoggedIn.value = true
+    } else {
+        isLoggedIn.value = false
+    }
+})
+
 </script>

@@ -9,10 +9,10 @@
                 <div class="flex justify-content-end">
                 </div>
             </template>
-            <template #empty> No customers found. </template>
-            <template #loading> Loading customers data. Please wait. </template>
+            <template #empty> No tasks found. </template>
+            <template #loading> Loading tasks data. Please wait. </template>
             <pr-column field="title" header="Name" style="width: 50%"></pr-column>
-            <pr-column field="assignee" header="Assignee" style="width: 15%"></pr-column>
+            <pr-column field="assignee_uuid" header="Assignee" style="width: 15%"></pr-column>
             <pr-column field="status" header="Status" style="width: 10%"></pr-column>
             <pr-column field="priority" header="Priority" style="width: 10%"></pr-column>
             <pr-column field="created_at" header="Created" style="width: 15%"></pr-column>
