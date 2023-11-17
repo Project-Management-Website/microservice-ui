@@ -31,18 +31,19 @@
   
 <script>
 import { loginUser } from "@/api/auth"
-import { setToken } from "@/utils/auth"
+import { setPermissions, setToken } from "@/utils/auth"
 // import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast"
 import { useField, useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import * as zod from 'zod';
+import router, { routes } from '@/router'
 
 export default {
   name: 'login_form',
   setup() {
-    const router = useRouter()
+    const Router = useRouter()
     const toast = useToast()
 
     const loginForm = {
@@ -67,10 +68,13 @@ export default {
         loginForm.password = password.value;
         console.log(loginForm)
         const data = await loginUser(loginForm);
-        setToken(data.token);
-        console.log(data)
 
-        router.push({ path: "/dashboard" })
+        setToken(data.token);
+        setPermissions(data.permissions);
+
+        await afterLogin(data.permissions)
+
+        Router.push({ path: "/dashboard" })
       } catch (error) {
           if (error.response) {
             toast.add({ severity: 'error', summary: 'Error', detail: `${error.response.data.message}`, life: 3000 });
@@ -84,6 +88,16 @@ export default {
     const onSubmit = handleSubmit(() => {
       handleLogin();
     })
+
+    async function afterLogin (permissions) {
+      let accessRoutes = routes.filter(route => permissions.includes(route.meta.permissions));
+
+      accessRoutes.forEach(route => {
+        router.addRoute(route);
+      });
+
+    }
+
     return {
       onSubmit,
       errors,
