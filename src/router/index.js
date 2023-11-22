@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router"
-import { getToken } from "@/utils/auth";
+import { getPermissions, getToken } from "@/utils/auth";
 
 export const UNAUTHORIZED_ROUTES = [
     {
@@ -17,10 +17,10 @@ export const UNAUTHORIZED_ROUTES = [
             }},
     },
     {
-        path: '/dashboard',
-        component: () => import('@/views/dashboard/index'),
+        path: '/test',
+        component: () => import('@/views/test/index'),
         hidden: true,
-        name: 'Dashboard',
+        name: 'Test',
     },
     {
         path: '/register',
@@ -37,18 +37,14 @@ export const UNAUTHORIZED_ROUTES = [
             }
         }
     },
-    {
-        path: '/:catchAll(.*)',
-        redirect: '/dashboard', // Redirect to a specific page
-    },
 ]
 
 export const routes = [
     {
-        path: '/test',
-        component: () => import('@/views/test/index'),
+        path: '/dashboard',
+        component: () => import('@/views/dashboard/index'),
         hidden: true,
-        name: 'Test',
+        name: 'Dashboard',
         meta: {
             permissions: 'view',
         }
@@ -80,11 +76,42 @@ export const routes = [
             permissions: 'create',
         }
     },
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: { name: 'Test' },
+        meta: { 
+          permissions: 'view',
+        },
+    },
 ]
 
 const router = createRouter({
     history: createWebHistory(),
     routes: UNAUTHORIZED_ROUTES,
+})
+
+router.beforeEach((to) => {
+    const token = getToken() || []
+
+    if (token && router.hasRoute('Register')) {
+        try {
+            console.log("sdss")
+            const permissions = getPermissions() || []
+
+            let accessRoutes = routes.filter(route => permissions.includes(route.meta.permissions));
+
+            accessRoutes.forEach(route => {
+                router.addRoute(route);
+            });
+            console.log(router.getRoutes())
+            router.removeRoute('Register')
+
+            return to.fullPath
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
 })
 
 export default router

@@ -13,7 +13,11 @@
                 </div>
                 <div v-else class="flex mr-4">
                     <div class="card flex justify-content-center">
-                        <pr-button icon="pi pi-user"  @click="toggleMenu" aria-haspopup="true" aria-controls="overlay_menu" outlined rounded/>
+                        <pr-button icon="pi pi-bell"  @click="toggleMenu" aria-haspopup="true" aria-controls="overlay_menu" text size="large" rounded/>
+                        <pr-menu ref="menu" id="overlay_menu" :model="profileMenu" :popup="true" />
+                    </div>
+                    <div class="card flex ml-4 justify-content-center">
+                        <pr-button icon="pi pi-user"  @click="toggleMenu" aria-haspopup="true" aria-controls="overlay_menu" text size="large" rounded/>
                         <pr-menu ref="menu" id="overlay_menu" :model="profileMenu" :popup="true" />
                     </div>
                 </div>
@@ -36,7 +40,7 @@
 </template>
 
 <script setup>
-import { getToken } from "@/utils/auth";
+import { getToken, removePermissions, removeToken } from "@/utils/auth";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router"
 
@@ -53,7 +57,12 @@ const profileMenu = ref([
             },
             {
                 label: 'Log out',
-                icon: 'pi pi-sign-out'
+                icon: 'pi pi-sign-out',
+                command: () => {
+                    removeToken();
+                    removePermissions();
+                    router.push({ name: "Test" })
+                }
             }
         ]
     }
@@ -89,14 +98,12 @@ const items = ref([
         
     },
 ]);
-const isLoggedIn = ref()
+const isLoggedIn = ref(false)
 
 onMounted(async () => {
     const token = getToken();
     if(token) {
         isLoggedIn.value = true
-    } else {
-        isLoggedIn.value = false
     }
 })
 

@@ -1,4 +1,5 @@
  <template>
+    <TopAppBar/>
     <div class="flex justify-content-center">
         <div class="card shadow-2 indigo-300 p-4 border-round m-6">
             <div class="p-fluid formgrid grid">
@@ -23,7 +24,7 @@
                 </div>
                 <div class="field col-12 md:col-12">
                     <label>Description</label>
-                    <pr-textArea v-model="task.description" rows="6"/>
+                    <pr-editor v-model="task.description" editorStyle="height: 20vh"/>
                 </div>
 
                 <div class="field col-12 md:col-3">
@@ -83,6 +84,7 @@ onMounted(async () => {
         }
     }
     const users = await getListUsers()
+    console.log(router)
     dropdownUsers.value = users.items;
 });
 
@@ -107,7 +109,12 @@ async function onSubmit() {
 </script>
 
 <script>
+import TopAppBar from '@/components/TopBar.vue';
+
     export default {
-        name: "task_detail"
+        name: "task_detail",
+        components: {
+            TopAppBar,
+        }
     }
 </script>

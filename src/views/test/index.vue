@@ -1,4 +1,5 @@
 <template>
+    <TopAppBar/>
 <div class="hello">
     <h1>{{ msg }}</h1>
     <p>
@@ -37,9 +38,13 @@
 
 <script>
 import { findUser } from "@/api/auth"
+import TopAppBar from "@/components/TopBar.vue"
 
 export default {
 name: 'Dashboard-Form',
+components: {
+    TopAppBar,
+},
 props: {
     msg: String
 },

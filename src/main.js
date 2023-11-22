@@ -29,6 +29,7 @@ import ProgressSpinner from 'primevue/progressspinner';
 import Calendar from 'primevue/calendar';
 import Menu from 'primevue/menu';
 import BadgeDirective from 'primevue/badgedirective';
+import Editor from 'primevue/editor';
 
 const app = createApp(App)
 
@@ -55,6 +56,7 @@ app.component('pr-dropDown', Dropdown)
 app.component('pr-progSpinner', ProgressSpinner)
 app.component('pr-calendar', Calendar)
 app.component('pr-menu', Menu)
+app.component('pr-editor', Editor)
 
 app.directive('badge', BadgeDirective);
 

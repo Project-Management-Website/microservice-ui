@@ -1,4 +1,5 @@
 <template>
+    <TopAppBar/>
     <div class="surface-0 flex align-self-center justify-content-center w-full h-full overflow-visible">
       <pr-toast/>
       <div class="p-4 shadow-2 border-round lg:w-4 ">
@@ -110,7 +111,11 @@ const onSubmit = handleSubmit(() => {
 </script>
 
 <script>
+import TopAppBar from "@/components/TopBar.vue";
     export default {
-        name: "register_form"
+        name: "register_form",
+        components: {
+          TopAppBar,
+        }
     }
 </script>

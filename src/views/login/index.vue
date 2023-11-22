@@ -1,4 +1,5 @@
 <template>
+  <AppTopBar/>
   <div class="surface-0 flex align-self-center justify-content-center w-full h-full overflow-visible">
     <pr-toast/>
     <div class="p-4 shadow-2 border-round lg:w-4 ">
@@ -39,9 +40,13 @@ import { useField, useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import * as zod from 'zod';
 import router, { routes } from '@/router'
+import AppTopBar from "@/components/TopBar.vue"
 
 export default {
   name: 'login_form',
+  components: {
+    AppTopBar,
+  },
   setup() {
     const Router = useRouter()
     const toast = useToast()
@@ -70,7 +75,7 @@ export default {
         const data = await loginUser(loginForm);
 
         setToken(data.token);
-        setPermissions(data.permissions);
+        setPermissions(data.permissions)
 
         await afterLogin(data.permissions)
 
@@ -90,12 +95,13 @@ export default {
     })
 
     async function afterLogin (permissions) {
+
       let accessRoutes = routes.filter(route => permissions.includes(route.meta.permissions));
 
       accessRoutes.forEach(route => {
+        console.log(route)
         router.addRoute(route);
       });
-
     }
 
     return {
