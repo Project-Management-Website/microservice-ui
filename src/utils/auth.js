@@ -1,5 +1,6 @@
 const TokenKey = 'Admin-Token'
 const PermissionKey = 'Permission'
+const UserKey = 'User'
 
 export function getToken() {
   return localStorage.getItem(TokenKey)
@@ -23,4 +24,16 @@ export function setPermissions(permissions) {
 
 export function removePermissions() {
   return localStorage.removeItem(PermissionKey)
+}
+
+export function getUser() {
+  return localStorage.getItem(UserKey)
+}
+
+export function setUser(user) {
+  return localStorage.setItem(UserKey, user)
+}
+
+export function removeUser() {
+  return localStorage.removeItem(UserKey)
 }

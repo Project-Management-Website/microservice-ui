@@ -37,6 +37,11 @@ export const UNAUTHORIZED_ROUTES = [
             }
         }
     },
+    {
+        path: '/check',
+        hidden: true,
+        name: 'Check',
+    }
 ]
 
 export const routes = [
@@ -91,20 +96,17 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-    const token = getToken() || []
+    const token = getToken()
+    const permissions = getPermissions()
 
-    if (token && router.hasRoute('Register')) {
+    if (token && router.hasRoute("Check")) {
         try {
-            console.log("sdss")
-            const permissions = getPermissions() || []
-
             let accessRoutes = routes.filter(route => permissions.includes(route.meta.permissions));
-
+            console.log("dasdsa")
             accessRoutes.forEach(route => {
                 router.addRoute(route);
             });
-            console.log(router.getRoutes())
-            router.removeRoute('Register')
+            router.removeRoute("Check")
 
             return to.fullPath
         } catch (err) {
@@ -113,5 +115,6 @@ router.beforeEach((to) => {
     }
 
 })
+
 
 export default router

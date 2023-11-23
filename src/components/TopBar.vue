@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { getToken, removePermissions, removeToken } from "@/utils/auth";
+import { getToken, removePermissions, removeToken, removeUser } from "@/utils/auth";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router"
 
@@ -61,6 +61,7 @@ const profileMenu = ref([
                 command: () => {
                     removeToken();
                     removePermissions();
+                    removeUser()
                     router.push({ name: "Test" })
                 }
             }

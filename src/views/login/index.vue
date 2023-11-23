@@ -32,14 +32,13 @@
   
 <script>
 import { loginUser } from "@/api/auth"
-import { setPermissions, setToken } from "@/utils/auth"
+import { setPermissions, setToken, setUser } from "@/utils/auth"
 // import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast"
 import { useField, useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import * as zod from 'zod';
-import router, { routes } from '@/router'
 import AppTopBar from "@/components/TopBar.vue"
 
 export default {
@@ -76,8 +75,7 @@ export default {
 
         setToken(data.token);
         setPermissions(data.permissions)
-
-        await afterLogin(data.permissions)
+        setUser(data.username)
 
         Router.push({ path: "/dashboard" })
       } catch (error) {
@@ -94,15 +92,15 @@ export default {
       handleLogin();
     })
 
-    async function afterLogin (permissions) {
+    // async function afterLogin (permissions) {
 
-      let accessRoutes = routes.filter(route => permissions.includes(route.meta.permissions));
+    //   let accessRoutes = routes.filter(route => permissions.includes(route.meta.permissions));
 
-      accessRoutes.forEach(route => {
-        console.log(route)
-        router.addRoute(route);
-      });
-    }
+    //   accessRoutes.forEach(route => {
+    //     console.log(route)
+    //     router.addRoute(route);
+    //   });
+    // }
 
     return {
       onSubmit,

@@ -20,7 +20,7 @@
                 </div>
                 <div class="field col-12 md:col-3">
                     <label>Due</label>
-                    <pr-calendar showIcon v-model="task.due_date" dateFormat="dd/mm/yy" showButtonBar/>
+                    <pr-calendar showIcon v-model="task.due_date" showTime hourFormat="12" dateFormat="mm/dd/yy" showButtonBar/>
                 </div>
                 <div class="field col-12 md:col-12">
                     <label>Description</label>
@@ -51,6 +51,7 @@ import { getDetailTask, updateDetailTask, createTask } from '@/api/task'
 import { getListUsers } from '@/api/auth'
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref, defineProps } from 'vue';
+import { formatDatetime } from '@/utils/datetime'
 
 const route = useRoute()
 const router = useRouter()
@@ -78,6 +79,9 @@ onMounted(async () => {
         try {
         const param = route.params.uuid
         const temptask = await getDetailTask(param)
+        temptask.task.due_date = formatDatetime(temptask.task.due_date)
+        temptask.task.created_at = formatDatetime(temptask.task.created_at)
+
         task.value = temptask.task
         } catch (err) {
             console.log(err)
@@ -94,10 +98,17 @@ async function onSubmit() {
             ...task.value,
             due_date: new Date(task.value.due_date)
         }
+        console.log(taskForm)
+        delete taskForm.created_at
         if (props.isEdit) {
             const task = await updateDetailTask(taskForm, route.params.uuid)
         } else {
-            const task = await createTask(taskForm)
+            const reporter = getUser()
+            const tempTask = {
+                ...taskForm,
+                reporter_uuid: reporter,
+            }
+            const task = await createTask(tempTask)
         }
         
         router.push({ name: "Task_List"})
@@ -110,6 +121,7 @@ async function onSubmit() {
 
 <script>
 import TopAppBar from '@/components/TopBar.vue';
+import { getUser } from '@/utils/auth';
 
     export default {
         name: "task_detail",

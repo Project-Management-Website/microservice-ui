@@ -7,8 +7,9 @@
                 <i class="pi pi-search"/>
                 <pr-inputText v-model="search" placeholder="Search" @keydown.enter="handleSearch"/>
             </span>
-            <pr-dropDown @change="handleDropdownChange" v-model="selectedStatus" :options="dropdownStatuses" optionLabel="name" optionValue="name" class="ml-2" placeholder="filter status"></pr-dropDown>
-            <pr-dropDown :options="dropdownPriorities" optionLabel="name" optionValue="name" class="ml-2" placeholder="filter priority"></pr-dropDown>
+            <pr-dropDown @change="handleFilter" v-model="selectedStatus" :options="dropdownStatuses" optionLabel="name" optionValue="name" class="ml-2" placeholder="filter status"></pr-dropDown>
+            <pr-dropDown @change="handleFilter" v-model="selectedPrio" :options="dropdownPriorities" optionLabel="name" optionValue="name" class="ml-2" placeholder="filter priority"></pr-dropDown>
+            <pr-button label="Clear Filter" text icon="pi pi-filter-slash" @click="clearFilter" class="ml-2"/>
         </div>
         <pr-button class="align-parent-end" @click="createTask" label="Create task"></pr-button>
     </div>
@@ -83,6 +84,7 @@
 import { getListTask, removeTask } from '@/api/task'; 
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { formatDatetime } from "@/utils/datetime"
 
 const router = useRouter();
 
@@ -104,13 +106,14 @@ const dropdownStatuses = ref([
         {name: 'Done'}
     ],
 )
-const selectedStatus = ref();
+const selectedStatus = ref("");
 const dropdownPriorities = ref([
         {name: 'low'},
         {name: 'medium'},
         {name: 'high'}
     ],
 )
+const selectedPrio = ref("");
 const search = ref()
 const getSeverity = (priority) => {
     switch (priority) {
@@ -161,10 +164,14 @@ async function deleteRow (data) {
 
 async function fetchList(data) {
     try {
-        let task = {}
-        task = await getListTask(data)
-        console.log(task)
-        tasks = task.data.items
+        const task = await getListTask(data)
+
+        task.data.items.forEach(item => {
+            item.created_at = formatDatetime(item.created_at)
+            item.due_date = formatDatetime(item.due_date)
+        })
+
+        tasks.value = task.data.items
     } catch (err) {
         console.log(err)
     }
@@ -181,12 +188,30 @@ async function handleSearch() {
     await fetchList(query)
 }
 
-async function handleDropdownChange () {
+async function handleFilter() {
     const query = {
-        status: selectedStatus.value
+        status: selectedStatus.value || {},
+        priority: selectedPrio.value || {}
     }
     await fetchList(query)
 }
+
+async function clearFilter() {
+    loading.value = true
+
+    try {
+        selectedPrio.value = ""
+        selectedStatus.value = ""
+        search.value = ""
+
+        await fetchList()
+        loading.value = false
+    } catch (err) {
+        console.log(err)
+    }
+
+}
+
 
 </script>
 
