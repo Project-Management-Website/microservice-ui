@@ -41,7 +41,12 @@ export const UNAUTHORIZED_ROUTES = [
         path: '/check',
         hidden: true,
         name: 'Check',
-    }
+    },
+    // {
+    //     path: '/:pathMatch(.*)*',
+    //     name: 'Catch',
+    //     redirect: { name: 'Test' },
+    // },
 ]
 
 export const routes = [
@@ -83,7 +88,7 @@ export const routes = [
     },
     {
         path: '/:pathMatch(.*)*',
-        redirect: { name: 'Test' },
+        redirect: { name: 'Dashboard' },
         meta: { 
           permissions: 'view',
         },
@@ -98,6 +103,7 @@ const router = createRouter({
 router.beforeEach((to) => {
     const token = getToken()
     const permissions = getPermissions()
+    console.log("before")
 
     if (token && router.hasRoute("Check")) {
         try {
@@ -106,7 +112,9 @@ router.beforeEach((to) => {
             accessRoutes.forEach(route => {
                 router.addRoute(route);
             });
+            console.log(router.getRoutes())
             router.removeRoute("Check")
+            // router.removeRoute("Catch")
 
             return to.fullPath
         } catch (err) {

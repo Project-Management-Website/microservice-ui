@@ -62,7 +62,7 @@ const profileMenu = ref([
                     removeToken();
                     removePermissions();
                     removeUser()
-                    router.push({ name: "Test" })
+                    router.push({ path: "/test" })
                 }
             }
         ]
@@ -78,26 +78,26 @@ const items = ref([
         label: 'Dashboard',
         icon: 'pi pi-fw pi-server',
         command: () => {
-            router.push({ name: 'Dashboard' })
+            router.push({ path: '/dashboard' })
         }
     },
     {
         label: 'Project',
         icon: 'pi pi-fw pi-box',
         command: () => {
-            router.push({ name: "Task_List" })
+            router.push({ path: "/task" })
         }
     },
-    {
-        label: 'Teams',
-        icon: 'pi pi-fw pi-users',
+    // {
+    //     label: 'Teams',
+    //     icon: 'pi pi-fw pi-users',
         
-    },
-    {
-        label: 'Settings',
-        icon: 'pi pi-fw pi-cog',
+    // },
+    // {
+    //     label: 'Settings',
+    //     icon: 'pi pi-fw pi-cog',
         
-    },
+    // },
 ]);
 const isLoggedIn = ref(false)
 

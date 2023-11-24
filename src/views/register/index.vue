@@ -35,7 +35,7 @@
 
 <script setup>
 import { register, loginUser } from "@/api/auth"
-import { setToken } from "@/utils/auth"
+import { setPermissions, setToken, setUser } from "@/utils/auth"
 // import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast"
@@ -50,7 +50,8 @@ const registerForm = {
     username: '',
     email: '',
     password: '',
-    confirm_password: ''
+    confirm_password: '',
+    permissions: ['view'],
 }
 
 let loginForm = {
@@ -88,6 +89,8 @@ async function registerUser() {
     console.log(loginForm);
     const data = await loginUser(loginForm);
     setToken(data.token);
+    setPermissions(data.permissions)
+    setUser(data.username)
     
     router.push({ path: "/dashboard" })
     } catch (error) {

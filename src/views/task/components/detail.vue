@@ -1,7 +1,7 @@
  <template>
     <TopAppBar/>
     <div class="flex justify-content-center">
-        <div class="card shadow-2 indigo-300 p-4 border-round m-6">
+        <div class="card shadow-2 indigo-300 p-4 border-round m-6 w-10">
             <div class="p-fluid formgrid grid">
                 <div class="field col-12 md:col-12 ">
                     <label>Name</label>
@@ -14,13 +14,13 @@
                 <div class="field md:col-6">
 
                 </div>
-                <div class="field col-12 md:col-3 ">
+                <div v-show="isEdit" class="field col-12 md:col-3 ">
                     <label>Created at</label>
                     <pr-calendar v-model="task.created_at" type="text" disabled/>
                 </div>
                 <div class="field col-12 md:col-3">
                     <label>Due</label>
-                    <pr-calendar showIcon v-model="task.due_date" showTime hourFormat="12" dateFormat="mm/dd/yy" showButtonBar/>
+                    <pr-calendar :minDate="minDate" showIcon v-model="task.due_date" showTime hourFormat="12" dateFormat="mm/dd/yy" showButtonBar/>
                 </div>
                 <div class="field col-12 md:col-12">
                     <label>Description</label>
@@ -40,7 +40,7 @@
                 </div>
 			</div>
 		</div>
-        <div class="card shadow-2 indigo-300 p-4 border-round m-6 md:w-5">
+        <div class="card shadow-2 indigo-300 p-4 border-round m-6 w-5">
             
         </div>
     </div>
@@ -73,6 +73,7 @@ const dropdownPriorities = ref([
     ],
 )
 let dropdownUsers = ref([])
+const minDate = ref(new Date())
 
 onMounted(async () => {
     if (props.isEdit) {
@@ -111,7 +112,7 @@ async function onSubmit() {
             const task = await createTask(tempTask)
         }
         
-        router.push({ name: "Task_List"})
+        router.push({ path: "/task"})
     } catch(err) {
         console.log(err)
     }

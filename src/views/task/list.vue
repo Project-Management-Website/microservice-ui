@@ -142,8 +142,8 @@ onMounted(async () => {
 
 const onRowDoubleClick = (event) => {
     console.log(event)
-    const params = event.data.uuid
-    router.push({ name: "Edit_Task", params: { uuid: params } })
+    const uuid = event.data.uuid
+    router.push({ path: "/task/" + uuid })
 }
 
 const onRowClick = (event) => {
@@ -210,7 +210,7 @@ async function clearFilter() {
         console.log(err)
     }
 
-}
+}// JSX
 
 
 </script>
