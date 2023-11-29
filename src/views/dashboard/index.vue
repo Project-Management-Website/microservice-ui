@@ -17,7 +17,7 @@
 <script>
 import ProjectInfo from "./components/project_info.vue"
 import TabMenu from "@/components/TabMenu.vue";
-import TopAppBar from "@/components/TopBar.vue"
+import TopAppBar from "@/components/AppTopBar.vue"
 
 export default {
     name: 'DashboardView',

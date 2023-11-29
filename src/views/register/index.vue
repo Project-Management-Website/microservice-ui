@@ -114,7 +114,7 @@ const onSubmit = handleSubmit(() => {
 </script>
 
 <script>
-import TopAppBar from "@/components/TopBar.vue";
+import TopAppBar from "@/components/AppTopBar.vue";
     export default {
         name: "register_form",
         components: {

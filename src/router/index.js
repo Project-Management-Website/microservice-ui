@@ -61,7 +61,7 @@ export const routes = [
     },
     {
         path: '/task',
-        component: () => import('@/views/task/list'),
+        component: () => import('@/views/task/TaskList'),
         hidden: true,
         name: 'Task_List',
         meta: {
@@ -70,7 +70,7 @@ export const routes = [
     },
     {
         path: '/task/:uuid',
-        component: () => import('@/views/task/edit'),
+        component: () => import('@/views/task/TaskEdit'),
         hidden: true,
         name: 'Edit_Task',
         meta: {
@@ -79,7 +79,7 @@ export const routes = [
     },
     {
         path: '/task/create',
-        component: () => import('@/views/task/create'),
+        component: () => import('@/views/task/TaskCreate'),
         hidden: true,
         name: 'Create_Task',
         meta: {
@@ -105,21 +105,20 @@ router.beforeEach((to) => {
     const permissions = getPermissions()
     console.log("before")
 
-    if (token && router.hasRoute("Check")) {
-        try {
-            let accessRoutes = routes.filter(route => permissions.includes(route.meta.permissions));
-            console.log("dasdsa")
-            accessRoutes.forEach(route => {
-                router.addRoute(route);
-            });
-            console.log(router.getRoutes())
-            router.removeRoute("Check")
-            // router.removeRoute("Catch")
+    if (!token || !router.hasRoute("Check")) return
+    try {
+        let accessRoutes = routes.filter(route => permissions.includes(route.meta.permissions));
+        console.log("dasdsa")
+        accessRoutes.forEach(route => {
+            router.addRoute(route);
+        });
+        console.log(router.getRoutes())
+        router.removeRoute("Check")
+        // router.removeRoute("Catch")
 
-            return to.fullPath
-        } catch (err) {
-            console.log(err)
-        }
+        return to.fullPath
+    } catch (err) {
+        console.log(err)
     }
 
 })

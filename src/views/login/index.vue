@@ -39,7 +39,7 @@ import { useToast } from "primevue/usetoast"
 import { useField, useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import * as zod from 'zod';
-import AppTopBar from "@/components/TopBar.vue"
+import AppTopBar from "@/components/AppTopBar.vue"
 
 export default {
   name: 'login_form',

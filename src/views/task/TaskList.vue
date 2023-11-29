@@ -35,56 +35,18 @@
             </pr-column>
         </pr-dataTable>
         <div class="card shadow-2 indigo-300 p-4 border-round w-4 mr-5">
-            <div class="p-fluid formgrid grid my-1">
-                <div class="field col-12 md:col-12">
-                    <label class="text-indigo-700 font-bold text-3xl">Task Detail</label>
-                </div>
-                <div class="field col-12 md:col-12 mt-2">
-                    <label>Name</label>
-                    <pr-inputText disabled v-model="selectedTask.title" type="text"/>
-                </div>
-                <div class="field col-12 md:col-6 ">
-                    <label>Reporter</label>
-                    <pr-inputText disabled v-model="selectedTask.reporter_uuid" type="text"/>
-                </div>
-                <div class="field col-12 md:col-6 ">
-                    <label>Assignee</label>
-                    <pr-inputText disabled v-model="selectedTask.assignee_uuid" type="text"/>
-                </div>
-                <div class="field col-12 md:col-6 ">
-                    <label>Status</label>
-                    <pr-inputText disabled v-model="selectedTask.status" type="text"/>
-                </div>
-                <div class="field col-12 md:col-6 ">
-                    <label>Priority</label>
-                    <pr-inputText disabled v-model="selectedTask.priority" type="text"/>
-                </div>
-                <div class="field col-12 md:col-6 ">
-                    <label>Created date</label>
-                    <pr-inputText disabled v-model="selectedTask.created_at" type="text"/>
-                </div>
-                <div class="field col-12 md:col-6 ">
-                    <label>Due date</label>
-                    <pr-inputText disabled v-model="selectedTask.due_date" type="text"/>
-                </div>
-                <div class="field col-12 md:col-12">
-                    <label>Description</label>
-                    <pr-editor v-model="selectedTask.description" readonly type="text"  editorStyle="height: 150px">
-                        <template v-slot:toolbar>
-                            <label></label>
-                        </template>
-                    </pr-editor>
-                </div>
-			</div>
+            <TaskBasicInfo :selectedTask="selectedTask"/>
         </div>
     </div>
 </template>
 
 <script setup>
-import { getListTask, removeTask } from '@/api/task'; 
+import { getListTask, removeTask } from '@/api/task';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { formatDatetime } from "@/utils/datetime"
+
+import TaskBasicInfo from './components/TaskBasicInfo.vue';
 
 const router = useRouter();
 
@@ -134,6 +96,7 @@ const getSeverity = (priority) => {
 onMounted(async () => {
     try {
         await fetchList()
+        selectedTask.value = tasks.value[0]
         loading.value = false
     } catch (err) {
         console.log(err)
@@ -155,9 +118,10 @@ async function deleteRow (data) {
     try {
         await removeTask(data.uuid)
         await fetchList()
-        loading.value = false
     } catch (err) {
         console.log(err)
+    } finally {
+        loading.value = false
     }
 
 }
@@ -172,6 +136,7 @@ async function fetchList(data) {
         })
 
         tasks.value = task.data.items
+
     } catch (err) {
         console.log(err)
     }
@@ -205,21 +170,21 @@ async function clearFilter() {
         search.value = ""
 
         await fetchList()
-        loading.value = false
     } catch (err) {
         console.log(err)
+    } finally {
+        loading.value = false
     }
 
-}// JSX
-
+}// JSX slot 
 
 </script>
 
 
 <script>
-import AppTopBar from "@/components/TopBar.vue"
+import AppTopBar from "@/components/AppTopBar.vue"
     export default {
-        name: "task_list",
+        name: "TaskList",
         components: {
             AppTopBar
         }

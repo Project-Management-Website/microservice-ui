@@ -50,7 +50,7 @@
 import { getDetailTask, updateDetailTask, createTask } from '@/api/task'
 import { getListUsers } from '@/api/auth'
 import { useRoute, useRouter } from 'vue-router';
-import { onMounted, ref, defineProps } from 'vue';
+import { onMounted, ref, defineProps, computed } from 'vue';
 import { formatDatetime } from '@/utils/datetime'
 
 const route = useRoute()
@@ -65,7 +65,7 @@ const dropdownStatuses = ref([
         {name: 'In progress'},
         {name: 'Done'}
     ],
-)
+) // ref reactive 
 const dropdownPriorities = ref([
         {name: 'low'},
         {name: 'medium'},
@@ -92,6 +92,13 @@ onMounted(async () => {
     console.log(router)
     dropdownUsers.value = users.items;
 });
+
+task.value.created_at = computed(() => {
+    return formatDatetime(task.value.created_at)
+})
+task.value.due_date = computed(() => {
+    return formatDatetime(task.value.due_date)
+})
 
 async function onSubmit() {
     try {
@@ -121,11 +128,11 @@ async function onSubmit() {
 </script>
 
 <script>
-import TopAppBar from '@/components/TopBar.vue';
+import TopAppBar from '@/components/AppTopBar.vue';
 import { getUser } from '@/utils/auth';
 
     export default {
-        name: "task_detail",
+        name: "TaskDetail",
         components: {
             TopAppBar,
         }

@@ -21,7 +21,7 @@
 
 <script>
 import { findUser } from "@/api/auth"
-import TopAppBar from "@/components/TopBar.vue"
+import TopAppBar from "@/components/AppTopBar.vue"
 
 export default {
 name: 'Dashboard-Form',

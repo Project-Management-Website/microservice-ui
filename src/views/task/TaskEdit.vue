@@ -3,10 +3,10 @@
 </template>
   
   <script>
-  import Detail from './components/detail'
+  import Detail from './components/TaskDetail'
   
   export default {
-    name: 'edit_form',
+    name: 'EditForm',
     components: { Detail },
   }
   </script>
