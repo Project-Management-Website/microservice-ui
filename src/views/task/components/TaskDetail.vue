@@ -1,46 +1,38 @@
  <template>
     <TopAppBar/>
     <div class="flex justify-content-center">
-        <div class="card shadow-2 indigo-300 p-4 border-round m-6 w-10">
+        <div class="card shadow-2 indigo-300 p-4 border-round m-6 w-6">
             <div class="p-fluid formgrid grid">
                 <div class="field col-12 md:col-12 ">
                     <label>Name</label>
                     <pr-inputText v-model="task.title" type="text"/>
                 </div>
-                <div class="field md:col-6">
+                <div class="field col-12 md:col-6">
                     <label>Assignee</label>
                     <pr-dropDown v-model="task.assignee_uuid" :options="dropdownUsers" optionLabel="username" optionValue="username"/>
                 </div>
-                <div class="field md:col-6">
-
-                </div>
-                <div v-show="isEdit" class="field col-12 md:col-3 ">
-                    <label>Created at</label>
-                    <pr-calendar v-model="task.created_at" type="text" disabled/>
-                </div>
-                <div class="field col-12 md:col-3">
+                <div class="field col-12 md:col-6">
                     <label>Due</label>
                     <pr-calendar :minDate="minDate" showIcon v-model="task.due_date" showTime hourFormat="12" dateFormat="mm/dd/yy" showButtonBar/>
                 </div>
-                <div class="field col-12 md:col-12">
-                    <label>Description</label>
-                    <pr-editor v-model="task.description" editorStyle="height: 20vh"/>
-                </div>
-
-                <div class="field col-12 md:col-3">
+                <div class="field col-12 md:col-6">
                     <label>Status</label>
                     <pr-dropDown v-model="task.status" :options="dropdownStatuses" optionLabel="name" optionValue="name"></pr-dropDown>
                 </div>
-                <div class="field col-12 md:col-3">
+                <div class="field col-12 md:col-6">
                     <label>Priority</label>
                     <pr-dropDown v-model="task.priority" :options="dropdownPriorities" optionLabel="name" optionValue="name"></pr-dropDown>
+                </div>
+                <div class="field col-12 md:col-12">
+                    <label>Description</label>
+                    <pr-editor v-model="task.description" editorStyle="height: 25vh"/>
                 </div>
                 <div class="field md:col-2 col-offset-10">
                     <pr-button @click="onSubmit" label="Submit"></pr-button>
                 </div>
 			</div>
 		</div>
-        <div class="card shadow-2 indigo-300 p-4 border-round m-6 w-5">
+        <div class="card shadow-2 indigo-300 p-4 border-round m-6 w-3">
             
         </div>
     </div>
@@ -65,7 +57,7 @@ const dropdownStatuses = ref([
         {name: 'In progress'},
         {name: 'Done'}
     ],
-) // ref reactive 
+)
 const dropdownPriorities = ref([
         {name: 'low'},
         {name: 'medium'},

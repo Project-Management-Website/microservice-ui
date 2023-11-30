@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export async function getListTask(query) {
     const apiURL = process.env.APP_PROJECT_API || 'http://localhost:3001'
     const url = apiURL + '/task'
-  
+    console.log(query)
     return request({
       url,
       method: 'get',

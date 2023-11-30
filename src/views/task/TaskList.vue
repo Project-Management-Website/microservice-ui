@@ -14,26 +14,10 @@
         <pr-button class="align-parent-end" @click="createTask" label="Create task"></pr-button>
     </div>
     <div class="flex card mt-3">
-        <pr-dataTable size="small" :value="tasks" paginator :rows="10" removableSort filterDisplay="row" :loading="loading" class="mx-5 w-8 border-round" selectionMode="single" @rowDblclick="onRowDoubleClick" @rowSelect="onRowClick">
-            <template #empty> No tasks found. </template>
-            <template #loading> Loading tasks data. Please wait. </template>
-            <pr-column field="title" header="Name" sortable style="width: 35%"></pr-column>
-            <pr-column field="reporter_uuid" header="Reporter" sortable style="width: 20%"></pr-column>
-            <pr-column field="assignee_uuid" header="Assignee" sortable style="width: 20%"></pr-column>
-            <pr-column field="status" header="Status" sortable style="width: 10%">
-
-            </pr-column>
-            <pr-column header="Priority"  sortable style="width: 10%">
-                <template #body="slotProps">
-                    <pr-tag :value="slotProps.data.priority" rounded :severity="getSeverity(slotProps.data.priority)" />
-                </template>
-            </pr-column>
-            <pr-column style="width: 5%">
-                <template #body="{ data }">
-                    <pr-button class="" type="button" icon='pi pi-delete-left' text size="small" @click="deleteRow(data)" />
-                </template>
-            </pr-column>
-        </pr-dataTable>
+        <div class="w-10">
+            <TaskTable class="w-11" @select-task="showTaskInfo" :listTasks="tasks" :loading="loading"/>
+            <pr-paginator @page="handlePageChange" class="mt-3" :rows="pagination.limit" :totalRecords="pagination.totalRecords"></pr-paginator>
+        </div>
         <div class="card shadow-2 indigo-300 p-4 border-round w-4 mr-5">
             <TaskBasicInfo :selectedTask="selectedTask"/>
         </div>
@@ -41,18 +25,21 @@
 </template>
 
 <script setup>
-import { getListTask, removeTask } from '@/api/task';
-import { ref, onMounted } from 'vue';
+import { getListTask } from '@/api/task';
+import { ref, onMounted, provide, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { formatDatetime } from "@/utils/datetime"
 
 import TaskBasicInfo from './components/TaskBasicInfo.vue';
+import AppTopBar from '@/components/AppTopBar.vue';
+import TaskTable from './components/TaskTable.vue';
 
 const router = useRouter();
 
-const loading = ref(true);
-let tasks = ref([]);
-let selectedTask = ref({
+provide('taskFunc', 'fetchList')
+
+const tasks = ref([]);
+const selectedTask = ref({
     title: "",
     reporter_uuid: "",
     assignee_uuid: "",
@@ -77,68 +64,63 @@ const dropdownPriorities = ref([
 )
 const selectedPrio = ref("");
 const search = ref()
-const getSeverity = (priority) => {
-    switch (priority) {
-        case 'low':
-            return 'success';
-
-        case 'medium':
-            return 'warning';
-
-        case 'high':
-            return 'danger';
-
-        default:
-            return null;
-    }
-};
+const loading = ref(true)
+const pagination = reactive({
+    query: {
+        page: 1,
+    limit: 10,
+    },
+    totalRecords: 1,
+})
 
 onMounted(async () => {
     try {
-        await fetchList()
-        selectedTask.value = tasks.value[0]
-        loading.value = false
+        const query = {
+            limit: pagination.value.limit,
+            page: pagination.value.page
+        }
+        console.log(pagination.query)
+        const { numTask } = await fetchList(query)
+        pagination.value.totalRecords = numTask;
+        
+        
+        selectedTask.value = tasks.value[0] || {}
     } catch (err) {
-        console.log(err)
-    }
-});
-
-const onRowDoubleClick = (event) => {
-    console.log(event)
-    const uuid = event.data.uuid
-    router.push({ path: "/task/" + uuid })
-}
-
-const onRowClick = (event) => {
-    selectedTask.value = event.data
-}
-
-async function deleteRow (data) {
-    loading.value = true
-    try {
-        await removeTask(data.uuid)
-        await fetchList()
-    } catch (err) {
+        
         console.log(err)
     } finally {
         loading.value = false
     }
+});
 
+async function handlePageChange(data) {
+    const query = {
+        limit: pagination.value.limit,
+        page: data.page + 1,
+    }
+    await fetchList(query)
 }
 
-async function fetchList(data) {
-    try {
-        const task = await getListTask(data)
+function showTaskInfo(data) {
+    selectedTask.value = data
+}
 
-        task.data.items.forEach(item => {
+async function fetchList(query) {
+    try {
+        loading.value = true
+        const tempTasks = await getListTask(query)
+
+        tempTasks.data.items.forEach(item => {
             item.created_at = formatDatetime(item.created_at)
             item.due_date = formatDatetime(item.due_date)
         })
 
-        tasks.value = task.data.items
-
+        tasks.value = tempTasks.data.items
+        return tempTasks.data
     } catch (err) {
         console.log(err)
+    } finally {
+        loading.value = false
     }
 }
 
@@ -162,6 +144,10 @@ async function handleFilter() {
 }
 
 async function clearFilter() {
+    const query = {
+        limit: pagination.value.limit,
+        page: pagination.value.page
+    }
     loading.value = true
 
     try {
@@ -169,24 +155,18 @@ async function clearFilter() {
         selectedStatus.value = ""
         search.value = ""
 
-        await fetchList()
+        await fetchList(query)
     } catch (err) {
         console.log(err)
     } finally {
         loading.value = false
     }
-
-}// JSX slot 
-
+}
 </script>
 
 
 <script>
-import AppTopBar from "@/components/AppTopBar.vue"
     export default {
         name: "TaskList",
-        components: {
-            AppTopBar
-        }
     }
 </script>

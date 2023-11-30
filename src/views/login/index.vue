@@ -16,7 +16,7 @@
           <small class="p-error mb-2" id="text-error">{{ errors.username || '&nbsp;' }}</small>
           
           <label class="flex align-content-start text-900 mb-2">Password</label>
-          <pr-inputText v-model="password" type="password" placeholder="Password" class="w-full" />
+          <pr-inputText v-model="password" :class="{ 'p-invalid': errors.username }" type="password" placeholder="Password" class="w-full" />
           <small class="p-error mb-2" id="text-error">{{ errors.password || '&nbsp;' }}</small>
 
           <div class="flex align-items-center justify-content-between mb-6">
