@@ -114,7 +114,6 @@ router.beforeEach((to) => {
         });
         console.log(router.getRoutes())
         router.removeRoute("Check")
-        // router.removeRoute("Catch")
 
         return to.fullPath
     } catch (err) {

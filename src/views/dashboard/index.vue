@@ -26,9 +26,6 @@ export default {
         TabMenu,
         TopAppBar
     },
-    data() {
-
-    },
     methods: {
         
     }

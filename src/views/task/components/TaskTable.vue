@@ -1,7 +1,9 @@
 <template>
     <pr-dataTable size="small" :value="listTasks" removableSort filterDisplay="row" :loading="isLoading" class="mx-5 w-8 border-round" selectionMode="single" @rowDblclick="onRowDoubleClick" @rowSelect="onRowClick">
         <template #empty> No tasks found. </template>
-        <template #loading> Loading tasks data. Please wait. </template>
+        <template #loading>
+            <pr-progSpinner style="width: 50px; height: 50px" strokeWidth="8"  animationDuration=".5s" aria-label="Custom ProgressSpinner"/>
+        </template>
         <pr-column field="title" header="Name" sortable style="width: 35%"></pr-column>
         <pr-column field="reporter_uuid" header="Reporter" sortable style="width: 20%"></pr-column>
         <pr-column field="assignee_uuid" header="Assignee" sortable style="width: 20%"></pr-column>

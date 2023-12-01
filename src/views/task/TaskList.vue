@@ -1,6 +1,7 @@
 
 <template>
     <AppTopBar></AppTopBar>
+    <pr-toast/>
     <div class="flex justify-content-between mx-5 mt-3 ">
         <div class="w-auto">
             <span class="p-input-icon-left">
@@ -16,7 +17,7 @@
     <div class="flex card mt-3">
         <div class="w-10">
             <TaskTable class="w-11" @select-task="showTaskInfo" :listTasks="tasks" :loading="loading"/>
-            <pr-paginator @page="handlePageChange" class="mt-3" :rows="pagination.limit" :totalRecords="pagination.totalRecords"></pr-paginator>
+            <pr-paginator @page="handlePageChange" class="mt-3" :rows="pagination.limit" :totalRecords="totalRecords"></pr-paginator>
         </div>
         <div class="card shadow-2 indigo-300 p-4 border-round w-4 mr-5">
             <TaskBasicInfo :selectedTask="selectedTask"/>
@@ -26,8 +27,9 @@
 
 <script setup>
 import { getListTask } from '@/api/task';
-import { ref, onMounted, provide, reactive } from 'vue';
+import { ref, onMounted, provide } from 'vue';
 import { useRouter } from 'vue-router';
+import { useToast } from "primevue/usetoast"
 import { formatDatetime } from "@/utils/datetime"
 
 import TaskBasicInfo from './components/TaskBasicInfo.vue';
@@ -35,6 +37,7 @@ import AppTopBar from '@/components/AppTopBar.vue';
 import TaskTable from './components/TaskTable.vue';
 
 const router = useRouter();
+const toast = useToast();
 
 provide('taskFunc', 'fetchList')
 
@@ -65,25 +68,17 @@ const dropdownPriorities = ref([
 const selectedPrio = ref("");
 const search = ref()
 const loading = ref(true)
-const pagination = reactive({
-    query: {
-        page: 1,
+const pagination = ref({
+    page: 1,
     limit: 10,
-    },
-    totalRecords: 1,
 })
+const totalRecords = ref(1)
 
 onMounted(async () => {
     try {
-        const query = {
-            limit: pagination.value.limit,
-            page: pagination.value.page
-        }
-        console.log(pagination.query)
-        const { numTask } = await fetchList(query)
-        pagination.value.totalRecords = numTask;
-        
-        
+        const { numTask } = await fetchList()
+        totalRecords.value = numTask;
+            
         selectedTask.value = tasks.value[0] || {}
     } catch (err) {
         
@@ -94,11 +89,8 @@ onMounted(async () => {
 });
 
 async function handlePageChange(data) {
-    const query = {
-        limit: pagination.value.limit,
-        page: data.page + 1,
-    }
-    await fetchList(query)
+    pagination.value.page = data.page + 1;
+    await fetchList()
 }
 
 function showTaskInfo(data) {
@@ -108,17 +100,22 @@ function showTaskInfo(data) {
 async function fetchList(query) {
     try {
         loading.value = true
+
+        query = {
+            ...query,
+            ...pagination.value
+        }
         const tempTasks = await getListTask(query)
 
         tempTasks.data.items.forEach(item => {
             item.created_at = formatDatetime(item.created_at)
             item.due_date = formatDatetime(item.due_date)
         })
-
+        
         tasks.value = tempTasks.data.items
         return tempTasks.data
-    } catch (err) {
-        console.log(err)
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: `${error}`, life: 3000 });
     } finally {
         loading.value = false
     }
@@ -144,10 +141,6 @@ async function handleFilter() {
 }
 
 async function clearFilter() {
-    const query = {
-        limit: pagination.value.limit,
-        page: pagination.value.page
-    }
     loading.value = true
 
     try {
@@ -155,7 +148,7 @@ async function clearFilter() {
         selectedStatus.value = ""
         search.value = ""
 
-        await fetchList(query)
+        await fetchList()
     } catch (err) {
         console.log(err)
     } finally {

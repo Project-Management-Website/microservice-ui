@@ -16,7 +16,7 @@
           <small class="p-error mb-2" id="text-error">{{ errors.username || '&nbsp;' }}</small>
           
           <label class="flex align-content-start text-900 mb-2">Password</label>
-          <pr-inputText v-model="password" :class="{ 'p-invalid': errors.username }" type="password" placeholder="Password" class="w-full" />
+          <pr-inputText v-model="password" :class="{ 'p-invalid': errors.password }" type="password" placeholder="Password" class="w-full" />
           <small class="p-error mb-2" id="text-error">{{ errors.password || '&nbsp;' }}</small>
 
           <div class="flex align-items-center justify-content-between mb-6">
@@ -70,7 +70,7 @@ export default {
       try {
         loginForm.username = username.value;
         loginForm.password = password.value;
-        console.log(loginForm)
+
         const data = await loginUser(loginForm);
 
         setToken(data.token);
@@ -109,28 +109,6 @@ export default {
       password
     }
   },
-  // data() {
-  //   return {
-  //     loginForm: {
-  //       username: '',
-  //       password: '',
-  //     },
-  //   };
-  // },
-  // methods: {
-  //   async handleLogin() {
-  //   try {
-  //     const data = await loginUser(this.loginForm);
-  //     setToken(data.token);
-  //     console.log(data)
-
-  //     this.$router.push({ path: "/dashboard" })
-  //   } catch (error) {
-  //       if (error.response) {
-  //         this.$toast.add({ severity: 'error', summary: 'Error', detail: `${error.response.data.message}`, life: 3000 });
-  //       }
-  //   }},
-  // }
 };
 </script>
     
