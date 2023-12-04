@@ -12,7 +12,7 @@
                     </div>
                     <div class="field col-12 md:col-6">
                         <label>Assignee</label>
-                        <pr-dropDown v-model="assignee_uuid" :class="{ 'p-invalid': errors.assignee_uuid }" :options="dropdownUsers" optionLabel="username" optionValue="username"/>
+                        <pr-dropDown v-model="assignee_uuid" :class="{ 'p-invalid': errors.assignee_uuid }" :options="dropdownUsers" optionLabel="username" optionValue="uuid"/>
                         <small class="p-error mb-2" id="text-error">{{ errors.assignee_uuid || '&nbsp;' }}</small>
                     </div>
                     <div class="field col-12 md:col-6">
@@ -49,6 +49,7 @@
 
 <script setup>
 import { getDetailTask, updateDetailTask, createTask } from '@/api/task'
+import { getUserUuid, getUser } from '@/utils/auth'
 import { getListUsers } from '@/api/auth'
 import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
@@ -58,22 +59,13 @@ import * as zod from "zod"
 import { useField, useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 
+
 const route = useRoute()
 const router = useRouter()
 const toast = useToast()
 
 const props = defineProps(['isEdit'])
 
-const task = ref({
-    title: "",
-    reporter_uuid: "",
-    assignee_uuid: "",
-    status: "",
-    priority: "",
-    created_at: "",
-    due_date: "",
-    description: "",
-})
 const dropdownStatuses = ref([
         {name: 'To do'},
         {name: 'In progress'},
@@ -95,7 +87,7 @@ const validationSchema = toTypedSchema(
         assignee_uuid: zod.string().nonempty('This field is required'),
         status: zod.string().optional(),
         priority: zod.string().nonempty('This field is required'),
-        due_date: zod.date(),
+        due_date: zod.date().or(zod.string()),
         description: zod.string().nonempty('This field is required'),
     })
 );
@@ -120,14 +112,15 @@ onMounted(async () => {
     if (props.isEdit) {
         try {
             const param = route.params.uuid
-            const temptask = await getDetailTask(param)
-            temptask.task.due_date = formatDatetime(temptask.task.due_date)
-            temptask.task.created_at = formatDatetime(temptask.task.created_at)
+            const result = await getDetailTask(param)
 
-            task.value = temptask.task
+            title.value = result.task.title
+            assignee_uuid.value = result.task.assignee_uuid
+            status.value = result.task.status
+            priority.value = result.task.priority
+            description.value = result.task.description
+            due_date.value = formatDatetime(result.task.due_date)
 
-            title.value = task.value.title
-            assignee_uuid.value = task.value.assignee_uuid
             } catch (error) {
                 toast.add({ severity: 'error', summary: 'Error', detail: `${error.message}`, life: 3000 });
             }
@@ -139,32 +132,38 @@ onMounted(async () => {
 
 async function handleSubmitForm() {
     try {
-        
+        const assignee = dropdownUsers.value.find(({ uuid }) => uuid === assignee_uuid.value)
+
         const taskForm = {
             title: title.value,
-            assignee_uuid: assignee_uuid.value,
+            assignee: {
+                uuid: assignee.uuid,
+                username: assignee.username,
+            },
             status: status.value,
             priority: priority.value,
             description: description.value,
-            due_date: new Date(due_date.value)
+            due_date: new Date(due_date.value),
+            reporter: {
+                uuid: getUserUuid(),
+                username: getUser(),
+            }
         }
-        console.log(title)
-        delete taskForm.created_at
+        console.log(taskForm)
+
         if (props.isEdit) {
             const task = await updateDetailTask(taskForm, route.params.uuid)
         } else {
-            const reporter = getUser()
             const tempTask = {
                 ...taskForm,
                 status: 'To do',
-                reporter_uuid: reporter,
             }
             const task = await createTask(tempTask)
         }
         
         router.push({ path: "/task"})
     } catch(error) {
-        toast.add({ severity: 'error', summary: 'Error', detail: `${error.response}`, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error', detail: `${error}`, life: 3000 });
     }
 }
 
@@ -172,7 +171,6 @@ async function handleSubmitForm() {
 
 <script>
 import TopAppBar from '@/components/AppTopBar.vue';
-import { getUser } from '@/utils/auth';
 
     export default {
         name: "TaskDetail",

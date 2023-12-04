@@ -44,8 +44,14 @@ provide('fetchList', fetchList)
 const tasks = ref([]);
 const selectedTask = ref({
     title: "",
-    reporter_uuid: "",
-    assignee_uuid: "",
+    reporter: {
+        uuid: "",
+        username: ""
+    },
+    assignee: {
+        uuid: "",
+        username: ""
+    },
     status: "",
     priority: "",
     created_at: "",
@@ -76,8 +82,7 @@ const totalRecords = ref(1)
 
 onMounted(async () => {
     try {
-        const { numTask } = await fetchList()
-        totalRecords.value = numTask;
+        await fetchList()
             
         selectedTask.value = tasks.value[0] || {}
     } catch (err) {
@@ -113,7 +118,7 @@ async function fetchList(query) {
         })
         
         tasks.value = tempTasks.data.items
-        return tempTasks.data
+        totalRecords.value = tempTasks.data.numTask;
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: `${error}`, life: 3000 });
     } finally {

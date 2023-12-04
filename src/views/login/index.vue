@@ -32,7 +32,7 @@
   
 <script>
 import { loginUser } from "@/api/auth"
-import { setPermissions, setToken, setUser } from "@/utils/auth"
+import { setPermissions, setToken, setUser, setUserUuid } from "@/utils/auth"
 // import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast"
@@ -76,6 +76,7 @@ export default {
         setToken(data.token);
         setPermissions(data.permissions)
         setUser(data.username)
+        setUserUuid(data.uuid)
 
         Router.push({ path: "/dashboard" })
       } catch (error) {

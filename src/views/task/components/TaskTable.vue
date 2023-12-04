@@ -5,8 +5,8 @@
             <pr-progSpinner style="width: 50px; height: 50px" strokeWidth="8"  animationDuration=".5s" aria-label="Custom ProgressSpinner"/>
         </template>
         <pr-column field="title" header="Name" sortable style="width: 35%"></pr-column>
-        <pr-column field="reporter_uuid" header="Reporter" sortable style="width: 20%"></pr-column>
-        <pr-column field="assignee_uuid" header="Assignee" sortable style="width: 20%"></pr-column>
+        <pr-column field="reporter.username" header="Reporter" sortable style="width: 20%"></pr-column>
+        <pr-column field="assignee.username" header="Assignee" sortable style="width: 20%"></pr-column>
         <pr-column field="status" header="Status" sortable style="width: 10%">
 
         </pr-column>
@@ -25,7 +25,7 @@
 
 <script setup>
 import { removeTask } from '@/api/task';
-import { defineProps, ref, onMounted, defineEmits, watch, inject } from 'vue';
+import { defineProps, ref, defineEmits, watch, inject } from 'vue';
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -50,10 +50,6 @@ const getSeverity = (priority) => {
             return null;
     }
 };
-
-onMounted(async() => {
-    
-});
 
 const onRowDoubleClick = (event) => {
     console.log(event)

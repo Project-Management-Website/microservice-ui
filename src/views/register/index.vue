@@ -94,8 +94,10 @@ async function registerUser() {
     
     router.push({ path: "/dashboard" })
     } catch (error) {
-        if (error.response) {
+        if (!Array.isArray(error.response.data)) {
             toast.add({ severity: 'error', summary: 'Error', detail: `${error.response.data.message}`, life: 3000 });
+        } else {
+            toast.add({ severity: 'error', summary: 'Error', detail: `${error.response.data[0].message}`, life: 3000 });
         }
     }
 }
@@ -106,7 +108,6 @@ const { value: password } = useField('password');
 const { value: confirm_password } = useField('confirm_password');
 
 const onSubmit = handleSubmit(() => {
-    console.log('asdas')
     registerUser();
 })
 
