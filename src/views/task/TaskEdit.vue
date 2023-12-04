@@ -10,5 +10,3 @@
     components: { Detail },
   }
   </script>
-  
-  

@@ -12,23 +12,28 @@
                     </div>
                     <div class="field col-12 md:col-6">
                         <label>Assignee</label>
-                        <pr-dropDown v-model="assignee_uuid" :options="dropdownUsers" optionLabel="username" optionValue="username"/>
+                        <pr-dropDown v-model="assignee_uuid" :class="{ 'p-invalid': errors.assignee_uuid }" :options="dropdownUsers" optionLabel="username" optionValue="username"/>
+                        <small class="p-error mb-2" id="text-error">{{ errors.assignee_uuid || '&nbsp;' }}</small>
                     </div>
                     <div class="field col-12 md:col-6">
                         <label>Due</label>
-                        <pr-calendar :minDate="minDate" showIcon v-model="due_date" showTime hourFormat="12" dateFormat="mm/dd/yy" showButtonBar/>
+                        <pr-calendar :minDate="minDate" :class="{ 'p-invalid': errors.due_date }" showIcon v-model="due_date" showTime hourFormat="12" dateFormat="mm/dd/yy" showButtonBar/>
+                        <small class="p-error mb-2" id="text-error">{{ errors.due_date || '&nbsp;' }}</small>
                     </div>
-                    <div class="field col-12 md:col-6">
+                    <div v-if="isEdit" class="field col-12 md:col-6">
                         <label>Status</label>
-                        <pr-dropDown v-model="status" :options="dropdownStatuses" optionLabel="name" optionValue="name"></pr-dropDown>
+                        <pr-dropDown v-model="status" :class="{ 'p-invalid': errors.status }" :options="dropdownStatuses" optionLabel="name" optionValue="name"></pr-dropDown>
+                        <small class="p-error mb-2" id="text-error">{{ errors.status || '&nbsp;' }}</small>
                     </div>
                     <div class="field col-12 md:col-6">
                         <label>Priority</label>
-                        <pr-dropDown v-model="priority" :options="dropdownPriorities" optionLabel="name" optionValue="name"></pr-dropDown>
+                        <pr-dropDown v-model="priority" :class="{ 'p-invalid': errors.priority }" :options="dropdownPriorities" optionLabel="name" optionValue="name"></pr-dropDown>
+                        <small class="p-error mb-2" id="text-error">{{ errors.priority || '&nbsp;' }}</small>
                     </div>
                     <div class="field col-12 md:col-12">
                         <label>Description</label>
-                        <pr-editor v-model="description" editorStyle="height: 25vh"/>
+                        <pr-editor v-model="description" :class="{ 'p-invalid': errors.description }" editorStyle="height: 25vh"/>
+                        <small class="p-error mb-2" id="text-error">{{ errors.description || '&nbsp;' }}</small>
                     </div>
                     <div class="field md:col-2 col-offset-10">
                         <pr-button type="submit" label="Submit"></pr-button>
@@ -81,25 +86,16 @@ const dropdownPriorities = ref([
         {name: 'high'}
     ],
 )
-let dropdownUsers = ref([])
+const dropdownUsers = ref([])
 const minDate = ref(new Date())
-
-// const submitForm = {
-//     title: "",
-//     assignee_uuid: "",
-//     status: "",
-//     priority: "",
-//     due_date: "",
-//     description: "",
-// }
 
 const validationSchema = toTypedSchema(
     zod.object({
         title: zod.string().nonempty('This field is required'),
         assignee_uuid: zod.string().nonempty('This field is required'),
-        status: zod.string().nonempty('This field is required'),
+        status: zod.string().optional(),
         priority: zod.string().nonempty('This field is required'),
-        due_date: zod.string().nonempty('This field is required'),
+        due_date: zod.date(),
         description: zod.string().nonempty('This field is required'),
     })
 );
@@ -116,6 +112,7 @@ const { value: priority } = useField('priority')
 const { value: description } = useField('description')
 
 const onSubmit = handleSubmit(() => {
+    console.log('sd')
       handleSubmitForm();
 })
 
@@ -142,11 +139,16 @@ onMounted(async () => {
 
 async function handleSubmitForm() {
     try {
+        
         const taskForm = {
-            ...task.value,
-            due_date: new Date(task.value.due_date)
+            title: title.value,
+            assignee_uuid: assignee_uuid.value,
+            status: status.value,
+            priority: priority.value,
+            description: description.value,
+            due_date: new Date(due_date.value)
         }
-
+        console.log(title)
         delete taskForm.created_at
         if (props.isEdit) {
             const task = await updateDetailTask(taskForm, route.params.uuid)
@@ -154,6 +156,7 @@ async function handleSubmitForm() {
             const reporter = getUser()
             const tempTask = {
                 ...taskForm,
+                status: 'To do',
                 reporter_uuid: reporter,
             }
             const task = await createTask(tempTask)
@@ -161,7 +164,7 @@ async function handleSubmitForm() {
         
         router.push({ path: "/task"})
     } catch(error) {
-        toast.add({ severity: 'error', summary: 'Error', detail: `${error}`, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error', detail: `${error.response}`, life: 3000 });
     }
 }
 

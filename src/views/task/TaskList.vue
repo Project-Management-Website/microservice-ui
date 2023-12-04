@@ -39,7 +39,7 @@ import TaskTable from './components/TaskTable.vue';
 const router = useRouter();
 const toast = useToast();
 
-provide('taskFunc', 'fetchList')
+provide('fetchList', fetchList)
 
 const tasks = ref([]);
 const selectedTask = ref({

@@ -25,12 +25,13 @@
 
 <script setup>
 import { removeTask } from '@/api/task';
-import { defineProps, ref, onMounted, defineEmits, watch } from 'vue';
+import { defineProps, ref, onMounted, defineEmits, watch, inject } from 'vue';
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const props = defineProps(['listTasks', 'loading'])
 const emit = defineEmits(['selectTask'])
+const fetchList = inject('fetchList')
 
 const isLoading = ref(props.loading);
 
@@ -68,7 +69,7 @@ async function deleteRow (data) {
     isLoading.value = true
     try {
         await removeTask(data.uuid)
-        // await fetchList()
+        await fetchList()
     } catch (err) {
         console.log(err)
     } finally {

@@ -42,11 +42,6 @@ export const UNAUTHORIZED_ROUTES = [
         hidden: true,
         name: 'Check',
     },
-    // {
-    //     path: '/:pathMatch(.*)*',
-    //     name: 'Catch',
-    //     redirect: { name: 'Test' },
-    // },
 ]
 
 export const routes = [
