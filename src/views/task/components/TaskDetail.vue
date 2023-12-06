@@ -12,12 +12,12 @@
                     </div>
                     <div class="field col-12 md:col-6">
                         <label>Assignee</label>
-                        <pr-dropDown v-model="assignee_uuid" :class="{ 'p-invalid': errors.assignee_uuid }" :options="dropdownUsers" optionLabel="username" optionValue="uuid"/>
-                        <small class="p-error mb-2" id="text-error">{{ errors.assignee_uuid || '&nbsp;' }}</small>
+                        <pr-dropDown v-model="assignee" :class="{ 'p-invalid': errors.assignee }" :options="dropdownUsers" optionLabel="username" optionValue="uuid"/>
+                        <small class="p-error mb-2" id="text-error">{{ errors.assignee || '&nbsp;' }}</small>
                     </div>
                     <div class="field col-12 md:col-6">
                         <label>Due</label>
-                        <pr-calendar :minDate="minDate" :class="{ 'p-invalid': errors.due_date }" showIcon v-model="due_date" showTime hourFormat="12" dateFormat="mm/dd/yy" showButtonBar/>
+                        <pr-calendar :minDate="new Date()" :class="{ 'p-invalid': errors.due_date }" showIcon v-model="due_date" showTime hourFormat="12" dateFormat="mm/dd/yy" showButtonBar/>
                         <small class="p-error mb-2" id="text-error">{{ errors.due_date || '&nbsp;' }}</small>
                     </div>
                     <div v-if="isEdit" class="field col-12 md:col-6">
@@ -66,25 +66,22 @@ const toast = useToast()
 
 const props = defineProps(['isEdit'])
 
-const dropdownStatuses = ref([
+const dropdownStatuses = [
         {name: 'To do'},
         {name: 'In progress'},
         {name: 'Done'}
-    ],
-)
-const dropdownPriorities = ref([
+]
+const dropdownPriorities = [
         {name: 'low'},
         {name: 'medium'},
         {name: 'high'}
-    ],
-)
+]
 const dropdownUsers = ref([])
-const minDate = ref(new Date())
 
 const validationSchema = toTypedSchema(
     zod.object({
         title: zod.string().nonempty('This field is required'),
-        assignee_uuid: zod.string().nonempty('This field is required'),
+        assignee: zod.string().nonempty('This field is required'),
         status: zod.string().optional(),
         priority: zod.string().nonempty('This field is required'),
         due_date: zod.date().or(zod.string()),
@@ -97,14 +94,13 @@ const { handleSubmit, errors } = useForm({
 })
 
 const { value: title } = useField('title')
-const { value: assignee_uuid } = useField('assignee_uuid')
+const { value: assignee } = useField('assignee')
 const { value: due_date } = useField('due_date')
 const { value: status } = useField('status')
 const { value: priority } = useField('priority')
 const { value: description } = useField('description')
 
 const onSubmit = handleSubmit(() => {
-    console.log('sd')
       handleSubmitForm();
 })
 
@@ -115,7 +111,7 @@ onMounted(async () => {
             const result = await getDetailTask(param)
 
             title.value = result.task.title
-            assignee_uuid.value = result.task.assignee_uuid
+            assignee.value = result.task.assignee.uuid
             status.value = result.task.status
             priority.value = result.task.priority
             description.value = result.task.description
@@ -132,13 +128,13 @@ onMounted(async () => {
 
 async function handleSubmitForm() {
     try {
-        const assignee = dropdownUsers.value.find(({ uuid }) => uuid === assignee_uuid.value)
+        const assigneeInfo = await dropdownUsers.value.find(({ uuid }) => uuid === assignee.value)
 
         const taskForm = {
             title: title.value,
             assignee: {
-                uuid: assignee.uuid,
-                username: assignee.username,
+                uuid: assigneeInfo.uuid,
+                username: assigneeInfo.username,
             },
             status: status.value,
             priority: priority.value,
@@ -149,7 +145,6 @@ async function handleSubmitForm() {
                 username: getUser(),
             }
         }
-        console.log(taskForm)
 
         if (props.isEdit) {
             const task = await updateDetailTask(taskForm, route.params.uuid)

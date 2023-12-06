@@ -32,7 +32,7 @@
   
 <script>
 import { loginUser } from "@/api/auth"
-import { setPermissions, setToken, setUser, setUserUuid } from "@/utils/auth"
+import { setRoles , setToken, setUser, setUserUuid } from "@/utils/auth"
 // import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast"
@@ -74,7 +74,7 @@ export default {
         const data = await loginUser(loginForm);
 
         setToken(data.token);
-        setPermissions(data.permissions)
+        setRoles(data.roles)
         setUser(data.username)
         setUserUuid(data.uuid)
 
@@ -92,16 +92,6 @@ export default {
     const onSubmit = handleSubmit(() => {
       handleLogin();
     })
-
-    // async function afterLogin (permissions) {
-
-    //   let accessRoutes = routes.filter(route => permissions.includes(route.meta.permissions));
-
-    //   accessRoutes.forEach(route => {
-    //     console.log(route)
-    //     router.addRoute(route);
-    //   });
-    // }
 
     return {
       onSubmit,

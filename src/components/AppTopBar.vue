@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { getToken, removePermissions, removeToken, removeUser } from "@/utils/auth";
+import { getToken, removeRoles, removeToken, removeUser, removeUserUuid } from "@/utils/auth";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router"
 
@@ -60,8 +60,9 @@ const profileMenu = ref([
                 icon: 'pi pi-sign-out',
                 command: () => {
                     removeToken();
-                    removePermissions();
-                    removeUser()
+                    removeRoles();
+                    removeUser();
+                    removeUserUuid();
                     router.push({ path: "/test" })
                 }
             }

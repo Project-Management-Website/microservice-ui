@@ -9,11 +9,11 @@
         </div>
         <div class="field col-12 md:col-6 ">
             <label>Reporter</label>
-            <label class="mt-2 text-indigo-500 font-bold block">{{ selectedTask.reporter.username }}</label>
+            <label class="mt-2 text-indigo-500 font-bold block">{{ selectedTask.reporter.username || "" }}</label>
         </div>
         <div class="field col-12 md:col-6 ">
             <label>Assignee</label>
-            <label class="mt-2 text-indigo-500 font-bold block">{{ selectedTask.assignee.username }}</label>
+            <label class="mt-2 text-indigo-500 font-bold block">{{ selectedTask.assignee.username || "" }}</label>
         </div>
         <div class="field col-12 md:col-6 ">
             <label>Status</label>

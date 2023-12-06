@@ -12,7 +12,7 @@
             <pr-dropDown @change="handleFilter" v-model="selectedPrio" :options="dropdownPriorities" optionLabel="name" optionValue="name" class="ml-2" placeholder="filter priority"></pr-dropDown>
             <pr-button label="Clear Filter" text icon="pi pi-filter-slash" @click="clearFilter" class="ml-2"/>
         </div>
-        <pr-button class="align-parent-end" @click="createTask" label="Create task"></pr-button>
+        <pr-button v-if="showCreate" class="align-parent-end" @click="createTask" label="Create task"></pr-button>
     </div>
     <div class="flex card mt-3">
         <div class="w-10">
@@ -27,10 +27,11 @@
 
 <script setup>
 import { getListTask } from '@/api/task';
-import { ref, onMounted, provide } from 'vue';
+import { ref, onMounted, provide, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from "primevue/usetoast"
 import { formatDatetime } from "@/utils/datetime"
+import { getRoles } from "@/utils/auth"
 
 import TaskBasicInfo from './components/TaskBasicInfo.vue';
 import AppTopBar from '@/components/AppTopBar.vue';
@@ -93,6 +94,13 @@ onMounted(async () => {
     }
 });
 
+const showCreate = computed(() => {
+    if(getRoles() === "leader") {
+        return true;
+    }
+    return false
+})
+
 async function handlePageChange(data) {
     pagination.value.page = data.page + 1;
     await fetchList()
@@ -127,7 +135,7 @@ async function fetchList(query) {
 }
 
 function createTask () {
-    router.push({ path: "/task/create" })
+    router.push({ path: "Create_Task" })
 }
 
 async function handleSearch() {

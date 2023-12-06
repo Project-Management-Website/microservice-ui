@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router"
-import { getPermissions, getToken } from "@/utils/auth";
+import { getRoles, getToken } from "@/utils/auth";
 
 export const UNAUTHORIZED_ROUTES = [
     {
@@ -51,7 +51,7 @@ export const routes = [
         hidden: true,
         name: 'Dashboard',
         meta: {
-            permissions: 'view',
+            roles: 'member',
         }
     },
     {
@@ -60,7 +60,7 @@ export const routes = [
         hidden: true,
         name: 'Task_List',
         meta: {
-            permissions: 'view',
+            roles: 'member',
         }
     },
     {
@@ -69,7 +69,7 @@ export const routes = [
         hidden: true,
         name: 'Edit_Task',
         meta: {
-            permissions: 'update',
+            roles: 'member',
         }
     },
     {
@@ -78,14 +78,14 @@ export const routes = [
         hidden: true,
         name: 'Create_Task',
         meta: {
-            permissions: 'create',
+            roles: 'leader',
         }
     },
     {
-        path: '/:pathMatch(.*)*',
+        path: '/:catchAll(.*)',
         redirect: { name: 'Dashboard' },
         meta: { 
-          permissions: 'view',
+            roles: 'member',
         },
     },
 ]
@@ -97,19 +97,22 @@ const router = createRouter({
 
 router.beforeEach((to) => {
     const token = getToken()
-    const permissions = getPermissions()
-    console.log("before")
+    const roles = getRoles()
 
     if (!token || !router.hasRoute("Check")) return
     try {
-        let accessRoutes = routes.filter(route => permissions.includes(route.meta.permissions));
-        console.log("dasdsa")
+        let accessRoutes = [];
+
+        if (roles === "leader") {
+            accessRoutes = routes;
+        } else if (roles === "member") {
+            accessRoutes = routes.filter(route => route.meta.roles === "member");
+        }
         accessRoutes.forEach(route => {
             router.addRoute(route);
         });
-        console.log(router.getRoutes())
         router.removeRoute("Check")
-
+        console.log(router.getRoutes())
         return to.fullPath
     } catch (err) {
         console.log(err)

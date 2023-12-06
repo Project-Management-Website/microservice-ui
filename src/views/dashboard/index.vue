@@ -11,19 +11,19 @@
         </div>
         <ProjectInfo class="align-content-start mt-5"/>
     </div>
-    <TabMenu class="p-4"/>
+
 </template>
     
 <script>
 import ProjectInfo from "./components/project_info.vue"
-import TabMenu from "@/components/TabMenu.vue";
+
 import TopAppBar from "@/components/AppTopBar.vue"
 
 export default {
     name: 'DashboardView',
     components: {
         ProjectInfo,
-        TabMenu,
+
         TopAppBar
     },
     methods: {

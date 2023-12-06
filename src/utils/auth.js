@@ -1,5 +1,5 @@
 const TokenKey = 'Admin-Token'
-const PermissionKey = 'Permission'
+const RoleKey = 'Roles'
 const UserKey = 'User'
 const UserUuidKey = 'Uuid'
 
@@ -15,16 +15,16 @@ export function removeToken() {
   return localStorage.removeItem(TokenKey)
 }
 
-export function getPermissions() {
-  return localStorage.getItem(PermissionKey)
+export function getRoles() {
+  return localStorage.getItem(RoleKey)
 }
 
-export function setPermissions(permissions) {
-  return localStorage.setItem(PermissionKey, permissions)
+export function setRoles(roles) {
+  return localStorage.setItem(RoleKey, roles)
 }
 
-export function removePermissions() {
-  return localStorage.removeItem(PermissionKey)
+export function removeRoles() {
+  return localStorage.removeItem(RoleKey)
 }
 
 export function getUser() {
