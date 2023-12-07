@@ -7,13 +7,11 @@
                 <div class="p-fluid formgrid grid">
                     <div class="field col-12 md:col-12 ">
                         <label>Name</label>
-                        <pr-inputText v-model="title" type="text" :class="{ 'p-invalid': errors.title }"/>
-                        <small class="p-error mb-2" id="text-error">{{ errors.title || '&nbsp;' }}</small>
+                        <ValInputText name="title"></ValInputText>
                     </div>
                     <div class="field col-12 md:col-6">
                         <label>Assignee</label>
-                        <pr-dropDown v-model="assignee" :class="{ 'p-invalid': errors.assignee }" :options="dropdownUsers" optionLabel="username" optionValue="uuid"/>
-                        <small class="p-error mb-2" id="text-error">{{ errors.assignee || '&nbsp;' }}</small>
+                        <ValDropdown name="assignee" :options="dropdownUsers" optLabel="username" optValue="uuid"></ValDropdown>
                     </div>
                     <div class="field col-12 md:col-6">
                         <label>Due</label>
@@ -22,12 +20,11 @@
                     </div>
                     <div v-if="isEdit" class="field col-12 md:col-6">
                         <label>Status</label>
-                        <pr-dropDown v-model="status" :class="{ 'p-invalid': errors.status }" :options="dropdownStatuses" optionLabel="name" optionValue="name"></pr-dropDown>
-                        <small class="p-error mb-2" id="text-error">{{ errors.status || '&nbsp;' }}</small>
+                        <ValDropdown name="status" :options="CONSTANT.dropdownStatuses" optLabel="name" optValue="name"></ValDropdown>
                     </div>
                     <div class="field col-12 md:col-6">
                         <label>Priority</label>
-                        <pr-dropDown v-model="priority" :class="{ 'p-invalid': errors.priority }" :options="dropdownPriorities" optionLabel="name" optionValue="name"></pr-dropDown>
+                        <pr-dropDown v-model="priority" :class="{ 'p-invalid': errors.priority }" :options="dropdownPriorities" :optionLabel="name" :optionValue="name"></pr-dropDown>
                         <small class="p-error mb-2" id="text-error">{{ errors.priority || '&nbsp;' }}</small>
                     </div>
                     <div class="field col-12 md:col-12">
@@ -58,7 +55,10 @@ import { formatDatetime } from '@/utils/datetime'
 import * as zod from "zod"
 import { useField, useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
+import CONSTANT from "@/constant"
 
+import ValInputText from "@/components/ValidateForm/ValInputText.vue"
+import ValDropdown from '@/components/ValidateForm/ValDropdown.vue';
 
 const route = useRoute()
 const router = useRouter()
@@ -66,16 +66,6 @@ const toast = useToast()
 
 const props = defineProps(['isEdit'])
 
-const dropdownStatuses = [
-        {name: 'To do'},
-        {name: 'In progress'},
-        {name: 'Done'}
-]
-const dropdownPriorities = [
-        {name: 'low'},
-        {name: 'medium'},
-        {name: 'high'}
-]
 const dropdownUsers = ref([])
 
 const validationSchema = toTypedSchema(
@@ -89,11 +79,10 @@ const validationSchema = toTypedSchema(
     })
 );
 
-const { handleSubmit, errors } = useForm({
+const { handleSubmit, errors, setFieldValue, values } = useForm({
     validationSchema,
 })
 
-const { value: title } = useField('title')
 const { value: assignee } = useField('assignee')
 const { value: due_date } = useField('due_date')
 const { value: status } = useField('status')
@@ -110,7 +99,7 @@ onMounted(async () => {
             const param = route.params.uuid
             const result = await getDetailTask(param)
 
-            title.value = result.task.title
+            setFieldValue("title", result.task.title)
             assignee.value = result.task.assignee.uuid
             status.value = result.task.status
             priority.value = result.task.priority
@@ -131,29 +120,25 @@ async function handleSubmitForm() {
         const assigneeInfo = await dropdownUsers.value.find(({ uuid }) => uuid === assignee.value)
 
         const taskForm = {
-            title: title.value,
+            ...values,
             assignee: {
                 uuid: assigneeInfo.uuid,
                 username: assigneeInfo.username,
             },
-            status: status.value,
-            priority: priority.value,
-            description: description.value,
-            due_date: new Date(due_date.value),
             reporter: {
                 uuid: getUserUuid(),
                 username: getUser(),
             }
         }
-
+        console.log(taskForm)
         if (props.isEdit) {
-            const task = await updateDetailTask(taskForm, route.params.uuid)
+            await updateDetailTask(taskForm, route.params.uuid)
         } else {
             const tempTask = {
                 ...taskForm,
                 status: 'To do',
             }
-            const task = await createTask(tempTask)
+            await createTask(tempTask)
         }
         
         router.push({ path: "/task"})

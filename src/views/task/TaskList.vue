@@ -135,7 +135,7 @@ async function fetchList(query) {
 }
 
 function createTask () {
-    router.push({ path: "Create_Task" })
+    router.push({ name: "Create_Task" })
 }
 
 async function handleSearch() {

@@ -53,7 +53,7 @@ const profileMenu = ref([
         items: [
             {
                 label: 'profile',
-                icon: 'pi pi-user-edit'
+                icon: 'pi pi-user-edit',
             },
             {
                 label: 'Log out',
@@ -89,16 +89,6 @@ const items = ref([
             router.push({ path: "/task" })
         }
     },
-    // {
-    //     label: 'Teams',
-    //     icon: 'pi pi-fw pi-users',
-        
-    // },
-    // {
-    //     label: 'Settings',
-    //     icon: 'pi pi-fw pi-cog',
-        
-    // },
 ]);
 const isLoggedIn = ref(false)
 
