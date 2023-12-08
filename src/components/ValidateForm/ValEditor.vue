@@ -1,10 +1,8 @@
 <template>
-    <pr-dropDown v-model="value"
-                 :options="options"
-                 type="text"
+    <pr-editor v-model="value"
                  :class="{ 'p-invalid': errorMessage }"
-                 :optionLabel="optLabel"
-                 :optionValue="optValue"/>
+                 :editorStyle="editorStyle"
+                 />
     <small class="p-error" id="text-error">{{ errorMessage || '&nbsp;' }}</small>
 </template>
 
@@ -12,7 +10,7 @@
 import { defineProps } from 'vue';
 import { useField } from 'vee-validate';
 
-const props = defineProps(['name', 'options', "optLabel", "optValue"])
+const props = defineProps(['name', 'editorStyle'])
 
 const { value, errorMessage } = useField(() => props.name)
 

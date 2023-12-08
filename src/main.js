@@ -31,7 +31,9 @@ import Menu from 'primevue/menu';
 import BadgeDirective from 'primevue/badgedirective';
 import Editor from 'primevue/editor';
 import Paginator from 'primevue/paginator';
+import { createPinia } from 'pinia';
 
+const pinia = createPinia()
 const app = createApp(App)
 
 app.use(PrimeVue, { ripple: true })  
@@ -63,5 +65,6 @@ app.component('pr-paginator', Paginator)
 app.directive('badge', BadgeDirective);
 
 app.use(router)
+app.use(pinia)
 
 app.mount('#app')

@@ -8,8 +8,12 @@
             </template>
             <template #end>
                 <div v-if="!isLoggedIn" class="mr-4">
-                    <router-link to="/login" class="mr-2">Login</router-link>
-                    <router-link to="/register">Register</router-link>
+                    <router-link to="/login">
+                        <pr-button size="small" outlined>Login</pr-button>
+                    </router-link>
+                    <router-link to="/register" class="ml-3">
+                        <pr-button size="small" >Register</pr-button>
+                    </router-link>
                 </div>
                 <div v-else class="flex mr-4">
                     <div class="card flex justify-content-center">

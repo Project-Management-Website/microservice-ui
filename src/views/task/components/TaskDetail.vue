@@ -1,5 +1,5 @@
  <template>
-    <TopAppBar/>
+    <AppTopBar/>
     <div class="flex justify-content-center">
         <pr-toast/>
         <div class="card shadow-2 indigo-300 p-4 border-round m-6 w-6">
@@ -7,30 +7,27 @@
                 <div class="p-fluid formgrid grid">
                     <div class="field col-12 md:col-12 ">
                         <label>Name</label>
-                        <ValInputText name="title"></ValInputText>
+                        <ValInputText name="title" type="text"/>
                     </div>
                     <div class="field col-12 md:col-6">
                         <label>Assignee</label>
-                        <ValDropdown name="assignee" :options="dropdownUsers" optLabel="username" optValue="uuid"></ValDropdown>
+                        <ValDropdown name="assignee" :options="dropdownUsers" optLabel="username" optValue="uuid"/>
                     </div>
                     <div class="field col-12 md:col-6">
                         <label>Due</label>
-                        <pr-calendar :minDate="new Date()" :class="{ 'p-invalid': errors.due_date }" showIcon v-model="due_date" showTime hourFormat="12" dateFormat="mm/dd/yy" showButtonBar/>
-                        <small class="p-error mb-2" id="text-error">{{ errors.due_date || '&nbsp;' }}</small>
+                        <ValCalendar name="due_date"/>
                     </div>
                     <div v-if="isEdit" class="field col-12 md:col-6">
                         <label>Status</label>
-                        <ValDropdown name="status" :options="CONSTANT.dropdownStatuses" optLabel="name" optValue="name"></ValDropdown>
+                        <ValDropdown name="status" :options="CONSTANT.dropdownStatuses" optLabel="name" optValue="name"/>
                     </div>
                     <div class="field col-12 md:col-6">
                         <label>Priority</label>
-                        <pr-dropDown v-model="priority" :class="{ 'p-invalid': errors.priority }" :options="dropdownPriorities" :optionLabel="name" :optionValue="name"></pr-dropDown>
-                        <small class="p-error mb-2" id="text-error">{{ errors.priority || '&nbsp;' }}</small>
+                        <ValDropdown name="priority" :options="CONSTANT.dropdownPriorities" optLabel="name" optValue="name"/>
                     </div>
                     <div class="field col-12 md:col-12">
                         <label>Description</label>
-                        <pr-editor v-model="description" :class="{ 'p-invalid': errors.description }" editorStyle="height: 25vh"/>
-                        <small class="p-error mb-2" id="text-error">{{ errors.description || '&nbsp;' }}</small>
+                        <ValEditor name="description" editorStyle="height: 25vh"/>
                     </div>
                     <div class="field md:col-2 col-offset-10">
                         <pr-button type="submit" label="Submit"></pr-button>
@@ -53,12 +50,15 @@ import { useToast } from 'primevue/usetoast';
 import { onMounted, ref, defineProps } from 'vue';
 import { formatDatetime } from '@/utils/datetime'
 import * as zod from "zod"
-import { useField, useForm } from 'vee-validate';
+import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import CONSTANT from "@/constant"
 
 import ValInputText from "@/components/ValidateForm/ValInputText.vue"
 import ValDropdown from '@/components/ValidateForm/ValDropdown.vue';
+import ValCalendar from '@/components/ValidateForm/ValCalendar.vue'
+import ValEditor from '@/components/ValidateForm/ValEditor.vue'
+import AppTopBar from '@/components/AppTopBar.vue';
 
 const route = useRoute()
 const router = useRouter()
@@ -79,45 +79,13 @@ const validationSchema = toTypedSchema(
     })
 );
 
-const { handleSubmit, errors, setFieldValue, values } = useForm({
+const { handleSubmit , setFieldValue, values } = useForm({
     validationSchema,
 })
 
-const { value: assignee } = useField('assignee')
-const { value: due_date } = useField('due_date')
-const { value: status } = useField('status')
-const { value: priority } = useField('priority')
-const { value: description } = useField('description')
-
-const onSubmit = handleSubmit(() => {
-      handleSubmitForm();
-})
-
-onMounted(async () => {
-    if (props.isEdit) {
-        try {
-            const param = route.params.uuid
-            const result = await getDetailTask(param)
-
-            setFieldValue("title", result.task.title)
-            assignee.value = result.task.assignee.uuid
-            status.value = result.task.status
-            priority.value = result.task.priority
-            description.value = result.task.description
-            due_date.value = formatDatetime(result.task.due_date)
-
-            } catch (error) {
-                toast.add({ severity: 'error', summary: 'Error', detail: `${error.message}`, life: 3000 });
-            }
-    }
-    const users = await getListUsers()
-
-    dropdownUsers.value = users.items;
-});
-
-async function handleSubmitForm() {
+const onSubmit = handleSubmit(async () => {
     try {
-        const assigneeInfo = await dropdownUsers.value.find(({ uuid }) => uuid === assignee.value)
+        const assigneeInfo = await dropdownUsers.value.find(({ uuid }) => uuid === values.assignee)
 
         const taskForm = {
             ...values,
@@ -145,17 +113,33 @@ async function handleSubmitForm() {
     } catch(error) {
         toast.add({ severity: 'error', summary: 'Error', detail: `${error}`, life: 3000 });
     }
-}
+})
 
+onMounted(async () => {
+    const users = await getListUsers()
+    dropdownUsers.value = users.items;
+
+    if (props.isEdit) {
+        try {
+            const param = route.params.uuid
+            const result = await getDetailTask(param)
+
+            setFieldValue("title", result.task.title)
+            setFieldValue("assignee", result.task.assignee.uuid)
+            setFieldValue("status", result.task.status)
+            setFieldValue("priority", result.task.priority)
+            setFieldValue("due_date", formatDatetime(result.task.due_date))
+            setFieldValue("description", result.task.description)
+
+            } catch (error) {
+                toast.add({ severity: 'error', summary: 'Error', detail: `${error.message}`, life: 3000 });
+            }
+    }
+});
 </script>
 
 <script>
-import TopAppBar from '@/components/AppTopBar.vue';
-
     export default {
         name: "TaskDetail",
-        components: {
-            TopAppBar,
-        }
     }
 </script>
