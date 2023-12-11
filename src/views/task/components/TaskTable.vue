@@ -1,16 +1,16 @@
 <template>
-    <pr-dataTable size="small" :value="listTasks" removableSort filterDisplay="row" :loading="isLoading" class="mx-5 w-8 border-round" selectionMode="single" @rowDblclick="onRowDoubleClick" @rowSelect="onRowClick">
+    <pr-dataTable size="small" :value="listTasks" filterDisplay="row" :loading="isLoading" class="mx-5 w-8 border-round" selectionMode="single" @rowDblclick="onRowDoubleClick" @rowSelect="onRowClick">
         <template #empty> No tasks found. </template>
         <template #loading>
             <pr-progSpinner style="width: 50px; height: 50px" strokeWidth="8"  animationDuration=".5s" aria-label="Custom ProgressSpinner"/>
         </template>
-        <pr-column field="title" header="Name" sortable style="width: 35%"></pr-column>
-        <pr-column field="reporter.username" header="Reporter" sortable style="width: 20%"></pr-column>
-        <pr-column field="assignee.username" header="Assignee" sortable style="width: 20%"></pr-column>
-        <pr-column field="status" header="Status" sortable style="width: 10%">
+        <pr-column field="title" header="Name" style="width: 35%"></pr-column>
+        <pr-column field="reporter.username" header="Reporter" style="width: 20%"></pr-column>
+        <pr-column field="assignee.username" header="Assignee" style="width: 20%"></pr-column>
+        <pr-column field="status" header="Status" style="width: 10%">
 
         </pr-column>
-        <pr-column header="Priority"  sortable style="width: 10%">
+        <pr-column header="Priority" style="width: 10%">
             <template #body="slotProps">
                 <pr-tag :value="slotProps.data.priority" rounded :severity="getSeverity(slotProps.data.priority)" />
             </template>
