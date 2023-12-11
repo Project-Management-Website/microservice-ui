@@ -1,5 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router"
-import { getRoles, getToken } from "@/utils/auth";
+import { getToken } from "@/utils/auth";
+import { useUserStore } from "@/stores/UserStore";
 
 export const UNAUTHORIZED_ROUTES = [
     {
@@ -36,11 +37,6 @@ export const UNAUTHORIZED_ROUTES = [
               next();
             }
         }
-    },
-    {
-        path: '/check',
-        hidden: true,
-        name: 'Check',
     },
 ]
 
@@ -95,13 +91,16 @@ const router = createRouter({
     routes: UNAUTHORIZED_ROUTES,
 })
 
-router.beforeEach((to) => {
-    const token = getToken()
-    const roles = getRoles()
+router.beforeEach(async (to) => {
+    const userStore = useUserStore()
 
-    if (!token || !router.hasRoute("Check")) return
+    const token = getToken()
+
+    if (!token || userStore.hasRoute) return
     try {
+        await userStore.setUserInfo(token)
         let accessRoutes = [];
+        const roles = userStore.userInfo.user_roles
 
         if (roles === "leader") {
             accessRoutes = routes;
@@ -111,8 +110,9 @@ router.beforeEach((to) => {
         accessRoutes.forEach(route => {
             router.addRoute(route);
         });
-        router.removeRoute("Check")
         console.log(router.getRoutes())
+        userStore.generatedRoute();
+
         return to.fullPath
     } catch (err) {
         console.log(err)

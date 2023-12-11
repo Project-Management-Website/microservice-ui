@@ -11,7 +11,7 @@ export async function loginUser(data) {
     })
 }
 
-export function findUser(uuid) {
+export function getUserInfo(uuid) {
     const apiURL = process.env.APP_AUTH_API || 'http://localhost:3000'
     const url = apiURL + '/user/info/' + uuid
   

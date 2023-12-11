@@ -8,8 +8,8 @@
                 <i class="pi pi-search"/>
                 <pr-inputText v-model="search" placeholder="Search" @keydown.enter="handleSearch"/>
             </span>
-            <pr-dropDown @change="handleFilter" v-model="selectedStatus" :options="dropdownStatuses" optionLabel="name" optionValue="name" class="ml-2" placeholder="filter status"></pr-dropDown>
-            <pr-dropDown @change="handleFilter" v-model="selectedPrio" :options="dropdownPriorities" optionLabel="name" optionValue="name" class="ml-2" placeholder="filter priority"></pr-dropDown>
+            <pr-dropDown @change="handleFilter" v-model="selectedStatus" :options="CONSTANT.dropdownStatuses" optionLabel="name" optionValue="name" class="ml-2" placeholder="filter status"></pr-dropDown>
+            <pr-dropDown @change="handleFilter" v-model="selectedPrio" :options="CONSTANT.dropdownPriorities" optionLabel="name" optionValue="name" class="ml-2" placeholder="filter priority"></pr-dropDown>
             <pr-button label="Clear Filter" text icon="pi pi-filter-slash" @click="clearFilter" class="ml-2"/>
         </div>
         <pr-button v-if="showCreate" class="align-parent-end" @click="createTask" label="Create task"></pr-button>
@@ -20,7 +20,7 @@
             <pr-paginator @page="handlePageChange" class="mt-3" :rows="pagination.limit" :totalRecords="totalRecords"></pr-paginator>
         </div>
         <div class="card shadow-2 indigo-300 p-4 border-round w-4 mr-5">
-            <TaskBasicInfo :selectedTask="selectedTask"/>
+            <TaskBasicInfo :selectedTask="selectedTaskInfo"/>
         </div>
     </div>
 </template>
@@ -31,14 +31,16 @@ import { ref, onMounted, provide, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from "primevue/usetoast"
 import { formatDatetime } from "@/utils/datetime"
-import { getRoles } from "@/utils/auth"
+import CONSTANT from '@/constant';
 
 import TaskBasicInfo from './components/TaskBasicInfo.vue';
 import AppTopBar from '@/components/AppTopBar.vue';
 import TaskTable from './components/TaskTable.vue';
+import { useUserStore } from '@/stores/UserStore';
 
 const router = useRouter();
 const toast = useToast();
+const userStore = useUserStore()
 
 provide('fetchList', fetchList)
 
@@ -59,19 +61,7 @@ const selectedTask = ref({
     due_date: "",
     description: "",
 })
-const dropdownStatuses = ref([
-        {name: 'To do'},
-        {name: 'In progress'},
-        {name: 'Done'}
-    ],
-)
 const selectedStatus = ref("");
-const dropdownPriorities = ref([
-        {name: 'low'},
-        {name: 'medium'},
-        {name: 'high'}
-    ],
-)
 const selectedPrio = ref("");
 const search = ref()
 const loading = ref(true)
@@ -85,20 +75,27 @@ onMounted(async () => {
     try {
         await fetchList()
             
-        selectedTask.value = tasks.value[0] || {}
-    } catch (err) {
-        
-        console.log(err)
+        selectedTask.value = tasks.value[0]
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: `${error}`, life: 3000 });
     } finally {
         loading.value = false
     }
 });
 
 const showCreate = computed(() => {
-    if(getRoles() === "leader") {
+    if(userStore.userInfo.user_roles === CONSTANT.LEADER_ROLE) {
         return true;
     }
     return false
+})
+
+const selectedTaskInfo = computed(() => {
+    return {
+        ...selectedTask.value,
+        reporter: selectedTask.value.reporter.username,
+        assignee: selectedTask.value.assignee.username
+    }
 })
 
 async function handlePageChange(data) {
@@ -131,7 +128,7 @@ async function fetchList(query) {
         toast.add({ severity: 'error', summary: 'Error', detail: `${error}`, life: 3000 });
     } finally {
         loading.value = false
-    }
+    } 
 }
 
 function createTask () {
@@ -162,8 +159,8 @@ async function clearFilter() {
         search.value = ""
 
         await fetchList()
-    } catch (err) {
-        console.log(err)
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: `${error}`, life: 3000 });
     } finally {
         loading.value = false
     }

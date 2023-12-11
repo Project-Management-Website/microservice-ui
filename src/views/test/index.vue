@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import { findUser } from "@/api/auth"
 import TopAppBar from "@/components/AppTopBar.vue"
 
 export default {
@@ -38,7 +37,7 @@ data() {
 },
 methods: {
     checkInfo () {
-        findUser(this.userId)
+        // findUser(this.userId)
     }
 }
 }

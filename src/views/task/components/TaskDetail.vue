@@ -79,7 +79,7 @@ const validationSchema = toTypedSchema(
     })
 );
 
-const { handleSubmit , setFieldValue, values } = useForm({
+const { handleSubmit , setValues, values } = useForm({
     validationSchema,
 })
 
@@ -124,16 +124,18 @@ onMounted(async () => {
             const param = route.params.uuid
             const result = await getDetailTask(param)
 
-            setFieldValue("title", result.task.title)
-            setFieldValue("assignee", result.task.assignee.uuid)
-            setFieldValue("status", result.task.status)
-            setFieldValue("priority", result.task.priority)
-            setFieldValue("due_date", formatDatetime(result.task.due_date))
-            setFieldValue("description", result.task.description)
+            setValues({
+                title: result.task.title,
+                assignee: result.task.assignee.uuid,
+                status: result.task.status,
+                priority: result.task.priority,
+                due_date: formatDatetime(result.task.due_date),
+                description: result.task.description,
+            })
 
-            } catch (error) {
-                toast.add({ severity: 'error', summary: 'Error', detail: `${error.message}`, life: 3000 });
-            }
+        } catch (error) {
+            toast.add({ severity: 'error', summary: 'Error', detail: `${error.message}`, life: 3000 });
+        }
     }
 });
 </script>

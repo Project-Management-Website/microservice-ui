@@ -44,11 +44,13 @@
 </template>
 
 <script setup>
-import { getToken, removeRoles, removeToken, removeUser, removeUserUuid } from "@/utils/auth";
+import { useUserStore } from "@/stores/UserStore";
+import { getToken, removeToken } from "@/utils/auth";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router"
 
 const router = useRouter()
+const userStore = useUserStore()
 
 const menu = ref();
 const profileMenu = ref([
@@ -64,9 +66,7 @@ const profileMenu = ref([
                 icon: 'pi pi-sign-out',
                 command: () => {
                     removeToken();
-                    removeRoles();
-                    removeUser();
-                    removeUserUuid();
+                    userStore.hasRoute = false
                     router.push({ path: "/test" })
                 }
             }
