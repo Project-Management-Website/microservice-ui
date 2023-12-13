@@ -43,7 +43,6 @@
 
 <script setup>
 import { getDetailTask, updateDetailTask, createTask } from '@/api/task'
-import { getUserUuid, getUser } from '@/utils/auth'
 import { getListUsers } from '@/api/auth'
 import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
@@ -53,6 +52,7 @@ import * as zod from "zod"
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import CONSTANT from "@/constant"
+import { useUserStore } from '@/stores/UserStore';
 
 import ValInputText from "@/components/ValidateForm/ValInputText.vue"
 import ValDropdown from '@/components/ValidateForm/ValDropdown.vue';
@@ -63,6 +63,7 @@ import AppTopBar from '@/components/AppTopBar.vue';
 const route = useRoute()
 const router = useRouter()
 const toast = useToast()
+const userStore = useUserStore()
 
 const props = defineProps(['isEdit'])
 
@@ -86,7 +87,7 @@ const { handleSubmit , setValues, values } = useForm({
 const onSubmit = handleSubmit(async () => {
     try {
         const assigneeInfo = await dropdownUsers.value.find(({ uuid }) => uuid === values.assignee)
-
+        
         const taskForm = {
             ...values,
             assignee: {
@@ -94,8 +95,8 @@ const onSubmit = handleSubmit(async () => {
                 username: assigneeInfo.username,
             },
             reporter: {
-                uuid: getUserUuid(),
-                username: getUser(),
+                uuid: userStore.userInfo.user_uuid,
+                username: userStore.userInfo.username,
             }
         }
         console.log(taskForm)

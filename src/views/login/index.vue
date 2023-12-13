@@ -35,7 +35,7 @@
 
 <script setup>
 import { loginUser } from "@/api/auth"
-import { setRoles , setToken, setUser, setUserUuid } from "@/utils/auth"
+import { setToken } from "@/utils/auth"
 import { useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast"
 import { useForm } from 'vee-validate';
@@ -69,9 +69,6 @@ const onSubmit = handleSubmit(async () => {
     const data = await loginUser(loginForm);
 
     setToken(data.token);
-    setRoles(data.roles)
-    setUser(data.username)
-    setUserUuid(data.uuid)
 
     Router.push({ path: "/dashboard" })
   } catch (error) {

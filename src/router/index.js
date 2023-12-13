@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router"
 import { getToken } from "@/utils/auth";
 import { useUserStore } from "@/stores/UserStore";
+import NProgress from "nprogress";
 
 export const UNAUTHORIZED_ROUTES = [
     {
@@ -92,6 +93,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
+    NProgress.start()
     const userStore = useUserStore()
 
     const token = getToken()
@@ -118,6 +120,10 @@ router.beforeEach(async (to) => {
         console.log(err)
     }
 
+})
+
+router.afterEach(() => {
+    NProgress.done()
 })
 
 

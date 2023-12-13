@@ -52,7 +52,6 @@ const getSeverity = (priority) => {
 };
 
 const onRowDoubleClick = (event) => {
-    console.log(event)
     const uuid = event.data.uuid
     router.push({ path: "/task/" + uuid })
 }

@@ -5,6 +5,7 @@ import 'primevue/resources/themes/soho-light/theme.css'
 import 'primeflex/primeflex.css';
 import router from './router'
 import 'primeicons/primeicons.css'
+import 'nprogress/nprogress.css'
 
 import Button from "primevue/button"
 import InputText from 'primevue/inputtext';
