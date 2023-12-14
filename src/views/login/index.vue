@@ -1,5 +1,4 @@
 <template>
-  <AppTopBar/>
   <div class="surface-0 flex align-self-center justify-content-center w-full h-full overflow-visible">
     <pr-toast/>
     <div class="p-4 shadow-2 border-round lg:w-4 ">
@@ -43,7 +42,6 @@ import { toTypedSchema } from '@vee-validate/zod';
 import * as zod from 'zod';
 
 import ValInputText from "@/components/ValidateForm/ValInputText.vue";
-import AppTopBar from "@/components/AppTopBar.vue"
 
 const Router = useRouter()
 const toast = useToast()

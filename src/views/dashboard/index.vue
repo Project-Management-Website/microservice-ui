@@ -1,5 +1,4 @@
 <template>
-    <TopAppBar/>
     <div class="p-4">
         <label class="flex align-content-start text-3xl font-bold">Your Work</label>
         <pr-divider class=""/>
@@ -17,14 +16,10 @@
 <script>
 import ProjectInfo from "./components/project_info.vue"
 
-import TopAppBar from "@/components/AppTopBar.vue"
-
 export default {
     name: 'DashboardView',
     components: {
         ProjectInfo,
-
-        TopAppBar
     },
     methods: {
         

@@ -1,5 +1,4 @@
 <template>
-    <TopAppBar/>
 <div class="hello">
     <h1>{{ msg }}</h1>
     <h1>
@@ -20,13 +19,8 @@
 </template>
 
 <script>
-import TopAppBar from "@/components/AppTopBar.vue"
-
 export default {
 name: 'Dashboard-Form',
-components: {
-    TopAppBar,
-},
 props: {
     msg: String
 },

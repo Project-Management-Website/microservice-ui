@@ -27,8 +27,11 @@
 import { removeTask } from '@/api/task';
 import { defineProps, ref, defineEmits, watch, inject } from 'vue';
 import { useRouter } from 'vue-router'
+import { useToast } from 'primevue/usetoast';
 
 const router = useRouter()
+const toast = useToast()
+
 const props = defineProps(['listTasks', 'loading'])
 const emit = defineEmits(['selectTask'])
 const fetchList = inject('fetchList')
@@ -65,8 +68,8 @@ async function deleteRow (data) {
     try {
         await removeTask(data.uuid)
         await fetchList()
-    } catch (err) {
-        console.log(err)
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: `${error.message}`, life: 3000 });
     } finally {
         isLoading.value = false
     }

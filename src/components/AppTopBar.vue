@@ -7,7 +7,7 @@
                 </span>
             </template>
             <template #end>
-                <div v-if="!isLoggedIn" class="mr-4">
+                <div v-if="!isLogged" class="mr-4">
                     <router-link to="/login">
                         <pr-button size="small" outlined>Login</pr-button>
                     </router-link>
@@ -16,13 +16,17 @@
                     </router-link>
                 </div>
                 <div v-else class="flex mr-4">
-                    <div class="card flex justify-content-center">
-                        <pr-button icon="pi pi-bell"  @click="toggleMenu" aria-haspopup="true" aria-controls="overlay_menu" text size="large" rounded/>
-                        <pr-menu ref="menu" id="overlay_menu" :model="profileMenu" :popup="true" />
-                    </div>
                     <div class="card flex ml-4 justify-content-center">
                         <pr-button icon="pi pi-user"  @click="toggleMenu" aria-haspopup="true" aria-controls="overlay_menu" text size="large" rounded/>
-                        <pr-menu ref="menu" id="overlay_menu" :model="profileMenu" :popup="true" />
+                        <pr-menu ref="menu" id="overlay_menu" :model="profileMenu" :popup="true">
+                            <template #item="{ item, props }">
+                                <a class="flex align-items-center" v-bind="props.action">
+                                    <span :class="item.icon" />
+                                    <span class="ml-2">{{ item.label }}</span>
+                                    <Badge v-if="item.badge" class="ml-auto" :value="item.badge" />
+                                </a>
+                            </template>
+                        </pr-menu>
                     </div>
                 </div>
             </template>
@@ -45,9 +49,10 @@
 
 <script setup>
 import { useUserStore } from "@/stores/UserStore";
-import { getToken, removeToken } from "@/utils/auth";
-import { ref, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router"
+
+import Badge from 'primevue/badge';
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -62,14 +67,18 @@ const profileMenu = ref([
                 icon: 'pi pi-user-edit',
             },
             {
+                label: 'Messages',
+                icon: 'pi pi-inbox',
+                badge: 2
+            },
+            {
                 label: 'Log out',
                 icon: 'pi pi-sign-out',
                 command: () => {
-                    removeToken();
-                    userStore.hasRoute = false
+                    userStore.logout()
                     router.push({ path: "/test" })
                 }
-            }
+            },
         ]
     }
 ]);
@@ -94,13 +103,9 @@ const items = ref([
         }
     },
 ]);
-const isLoggedIn = ref(false)
 
-onMounted(async () => {
-    const token = getToken();
-    if(token) {
-        isLoggedIn.value = true
-    }
+const isLogged = computed(() => {
+    return userStore.userInfo.username ? true : false
 })
 
 </script>

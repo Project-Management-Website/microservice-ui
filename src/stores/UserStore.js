@@ -1,4 +1,5 @@
 import { getUserInfo } from '@/api/auth'
+import { removeToken } from '@/utils/auth'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 
@@ -17,6 +18,15 @@ export const useUserStore = defineStore('user', () => {
         userInfo.user_roles = data.user.roles
     }
 
+    function logout() {
+        removeToken()
+        userInfo.username = ""
+        userInfo.user_uuid = ""
+        userInfo.user_roles = ""
+
+        hasRoute.value = false
+    }
+
     function generatedRoute() {
         hasRoute.value = true;
     }
@@ -25,6 +35,7 @@ export const useUserStore = defineStore('user', () => {
         userInfo,
         hasRoute,
         setUserInfo,
-        generatedRoute
+        generatedRoute,
+        logout
     }
 })

@@ -1,6 +1,5 @@
 
 <template>
-    <AppTopBar></AppTopBar>
     <pr-toast/>
     <div class="flex justify-content-between mx-5 mt-3 ">
         <div class="w-auto">
@@ -34,7 +33,6 @@ import { formatDatetime } from "@/utils/datetime"
 import CONSTANT from '@/constant';
 
 import TaskBasicInfo from './components/TaskBasicInfo.vue';
-import AppTopBar from '@/components/AppTopBar.vue';
 import TaskTable from './components/TaskTable.vue';
 import { useUserStore } from '@/stores/UserStore';
 

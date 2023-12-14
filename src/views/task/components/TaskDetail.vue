@@ -1,5 +1,4 @@
  <template>
-    <AppTopBar/>
     <div class="flex justify-content-center">
         <pr-toast/>
         <div class="card shadow-2 indigo-300 p-4 border-round m-6 w-6">
@@ -46,7 +45,7 @@ import { getDetailTask, updateDetailTask, createTask } from '@/api/task'
 import { getListUsers } from '@/api/auth'
 import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
-import { onMounted, ref, defineProps } from 'vue';
+import { onMounted, ref, defineProps, inject } from 'vue';
 import { formatDatetime } from '@/utils/datetime'
 import * as zod from "zod"
 import { useForm } from 'vee-validate';
@@ -58,7 +57,6 @@ import ValInputText from "@/components/ValidateForm/ValInputText.vue"
 import ValDropdown from '@/components/ValidateForm/ValDropdown.vue';
 import ValCalendar from '@/components/ValidateForm/ValCalendar.vue'
 import ValEditor from '@/components/ValidateForm/ValEditor.vue'
-import AppTopBar from '@/components/AppTopBar.vue';
 
 const route = useRoute()
 const router = useRouter()
@@ -66,6 +64,7 @@ const toast = useToast()
 const userStore = useUserStore()
 
 const props = defineProps(['isEdit'])
+const socket = inject('socket')
 
 const dropdownUsers = ref([])
 
@@ -86,6 +85,7 @@ const { handleSubmit , setValues, values } = useForm({
 
 const onSubmit = handleSubmit(async () => {
     try {
+        socket.emit("notif:create", "dasdasdsa")
         const assigneeInfo = await dropdownUsers.value.find(({ uuid }) => uuid === values.assignee)
         
         const taskForm = {
