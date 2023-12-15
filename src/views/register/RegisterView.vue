@@ -89,9 +89,3 @@ const onSubmit = handleSubmit(async() => {
   }
 })
 </script>
-
-<script>
-    export default {
-        name: "RegisterForm",
-    }
-</script>

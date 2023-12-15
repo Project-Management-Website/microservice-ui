@@ -6,7 +6,7 @@ import NProgress from "nprogress";
 export const UNAUTHORIZED_ROUTES = [
     {
         path: '/login',
-        component: () => import('@/views/login/index'),
+        component: () => import('@/views/login/LoginView'),
         hidden: true,
         name: 'Login',
         beforeEnter: (to, from, next) => {
@@ -26,7 +26,7 @@ export const UNAUTHORIZED_ROUTES = [
     },
     {
         path: '/register',
-        component: () => import('@/views/register/index'),
+        component: () => import('@/views/register/RegisterView'),
         hidden: true,
         name: 'Register',
         beforeEnter: (to, from, next) => {
@@ -44,7 +44,7 @@ export const UNAUTHORIZED_ROUTES = [
 export const routes = [
     {
         path: '/dashboard',
-        component: () => import('@/views/dashboard/index'),
+        component: () => import('@/views/dashboard/Dashboard'),
         hidden: true,
         name: 'Dashboard',
         meta: {

@@ -73,7 +73,7 @@ onMounted(async () => {
     try {
         await fetchList()
             
-        selectedTask.value = tasks.value[0]
+        selectedTask.value = tasks.value[0] || {}
     } catch (error) {
         toast.add({ severity: 'error', summary: 'Error', detail: `${error}`, life: 3000 });
     } finally {
@@ -163,11 +163,4 @@ async function clearFilter() {
         loading.value = false
     }
 }
-</script>
-
-
-<script>
-    export default {
-        name: "TaskList",
-    }
 </script>

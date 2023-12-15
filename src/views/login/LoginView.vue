@@ -76,9 +76,3 @@ const onSubmit = handleSubmit(async () => {
   }
 })
 </script>
-  
-<script>
-export default {
-  name: 'LoginForm'
-};
-</script>

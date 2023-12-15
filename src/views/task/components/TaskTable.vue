@@ -80,9 +80,3 @@ watch(props, () => {
 })
 
 </script>
-
-<script>
-    export default {
-        name: "TaskTable"
-    }
-</script>

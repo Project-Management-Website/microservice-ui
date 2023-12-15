@@ -45,13 +45,14 @@ import { getDetailTask, updateDetailTask, createTask } from '@/api/task'
 import { getListUsers } from '@/api/auth'
 import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
-import { onMounted, ref, defineProps, inject } from 'vue';
+import { onMounted, ref, defineProps } from 'vue';
 import { formatDatetime } from '@/utils/datetime'
 import * as zod from "zod"
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import CONSTANT from "@/constant"
 import { useUserStore } from '@/stores/UserStore';
+import { useSocketStore } from '@/stores/SocketStore'
 
 import ValInputText from "@/components/ValidateForm/ValInputText.vue"
 import ValDropdown from '@/components/ValidateForm/ValDropdown.vue';
@@ -62,9 +63,9 @@ const route = useRoute()
 const router = useRouter()
 const toast = useToast()
 const userStore = useUserStore()
+const useSocket = useSocketStore()
 
 const props = defineProps(['isEdit'])
-const socket = inject('socket')
 
 const dropdownUsers = ref([])
 
@@ -85,8 +86,12 @@ const { handleSubmit , setValues, values } = useForm({
 
 const onSubmit = handleSubmit(async () => {
     try {
-        socket.emit("notif:create", "dasdasdsa")
         const assigneeInfo = await dropdownUsers.value.find(({ uuid }) => uuid === values.assignee)
+        const related_users = []
+        related_users.push(assigneeInfo.uuid)
+        useSocket.socket.emit("notif:create", {
+            related_users,
+        })
         
         const taskForm = {
             ...values,
@@ -139,10 +144,4 @@ onMounted(async () => {
         }
     }
 });
-</script>
-
-<script>
-    export default {
-        name: "TaskDetail",
-    }
 </script>

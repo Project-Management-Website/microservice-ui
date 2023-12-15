@@ -42,12 +42,6 @@
     </div>
 </template>
 
-<script>
-    export default {
-        name: "TaskBasicInfo"
-    }
-</script>
-
 <script setup>
 import { watch, defineProps, ref } from 'vue';
 

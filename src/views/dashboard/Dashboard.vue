@@ -13,16 +13,6 @@
 
 </template>
     
-<script>
-import ProjectInfo from "./components/project_info.vue"
-
-export default {
-    name: 'DashboardView',
-    components: {
-        ProjectInfo,
-    },
-    methods: {
-        
-    }
-}
+<script setup>
+import ProjectInfo from './components/project_info.vue';
 </script>
