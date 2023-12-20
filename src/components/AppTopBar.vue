@@ -49,13 +49,17 @@
 
 <script setup>
 import { useUserStore } from "@/stores/UserStore";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRouter } from "vue-router"
+import { useSocketStore } from "@/stores/SocketStore";
 
 import Badge from 'primevue/badge';
+import { useToast } from "primevue/usetoast";
 
 const router = useRouter()
 const userStore = useUserStore()
+const useSocket = useSocketStore()
+const toast = useToast()
 
 const menu = ref();
 const profileMenu = ref([
@@ -63,13 +67,8 @@ const profileMenu = ref([
         label: 'Account',
         items: [
             {
-                label: 'profile',
+                label: 'Profile',
                 icon: 'pi pi-user-edit',
-            },
-            {
-                label: 'Messages',
-                icon: 'pi pi-inbox',
-                badge: 2
             },
             {
                 label: 'Log out',
@@ -108,4 +107,11 @@ const isLogged = computed(() => {
     return userStore.userInfo.username ? true : false
 })
 
+watch(isLogged, () => {
+    if(isLogged.value) {
+        useSocket.socket.on("notif:notify", (data) => {
+            toast.add({ severity: 'info', summary: 'Info', detail: `${data.message}`, life: 3000 });
+        })
+    }
+})
 </script>

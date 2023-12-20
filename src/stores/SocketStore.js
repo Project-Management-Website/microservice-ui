@@ -14,6 +14,11 @@ export const useSocketStore = defineStore({
                     token: getToken()
                 }
             })
+        },
+        disconnect() {
+            if(this.socket) {
+                this.socket.disconnect()
+            }
         }
     }
 })

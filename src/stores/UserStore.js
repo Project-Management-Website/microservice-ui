@@ -29,6 +29,7 @@ export const useUserStore = defineStore('user', () => {
         userInfo.user_roles = ""
 
         hasRoute.value = false
+        socket.disconnect()
     }
 
     function generatedRoute() {

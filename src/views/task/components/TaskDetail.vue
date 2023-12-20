@@ -87,11 +87,6 @@ const { handleSubmit , setValues, values } = useForm({
 const onSubmit = handleSubmit(async () => {
     try {
         const assigneeInfo = await dropdownUsers.value.find(({ uuid }) => uuid === values.assignee)
-        const related_users = []
-        related_users.push(assigneeInfo.uuid)
-        useSocket.socket.emit("notif:create", {
-            related_users,
-        })
         
         const taskForm = {
             ...values,
@@ -104,7 +99,6 @@ const onSubmit = handleSubmit(async () => {
                 username: userStore.userInfo.username,
             }
         }
-        console.log(taskForm)
         if (props.isEdit) {
             await updateDetailTask(taskForm, route.params.uuid)
         } else {
@@ -112,6 +106,10 @@ const onSubmit = handleSubmit(async () => {
                 ...taskForm,
                 status: 'To do',
             }
+            useSocket.socket.emit("notif:create", {
+                receiver: assigneeInfo.uuid,
+            })
+
             await createTask(tempTask)
         }
         
