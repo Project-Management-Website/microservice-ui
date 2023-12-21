@@ -1,5 +1,5 @@
 <template>
-  <div class="surface-0 flex align-self-center justify-content-center w-full h-full overflow-visible">
+  <div class="surface-0 flex align-self-center justify-content-center w-full h-auto overflow-visible mt-8">
     <pr-toast/>
     <div class="p-4 shadow-2 border-round lg:w-4 ">
       <div class="text-center mb-7 mt-3">

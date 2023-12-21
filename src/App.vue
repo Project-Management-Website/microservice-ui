@@ -1,20 +1,21 @@
 <template>
   <div id="app">
-    <AppTopBar></AppTopBar>
-    <router-view/>
+    <div v-if="userStore.hasRoute">
+      <AppTopBar></AppTopBar>
+      <router-view/>
+    </div>
+    <div v-else class="w-screen h-screen bg-auto bg-no-repeat bg-center bg-primary border-round h-20rem w-full" style="background-image: url('assets/back_1.png');">
+
+      <router-view/>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onUnmounted } from 'vue';
 import AppTopBar from './components/AppTopBar.vue';
-import { useSocketStore } from './stores/SocketStore';
+import { useUserStore } from './stores/UserStore';
 
-const useSocket = useSocketStore()
-
-onUnmounted(() => {
-  useSocket.socket.disconnect()
-})
+const userStore = useUserStore()
 </script>
 
 <script>

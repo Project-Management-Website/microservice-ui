@@ -1,8 +1,8 @@
 import { getUserInfo } from '@/api/auth'
-import { removeToken } from '@/utils/auth'
+import { socket } from '@/socket'
+import { getToken, removeToken } from '@/utils/auth'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
-import { useSocketStore } from './SocketStore'
 
 export const useUserStore = defineStore('user', () => {
     const userInfo = reactive({
@@ -12,15 +12,16 @@ export const useUserStore = defineStore('user', () => {
     })
     const hasRoute = ref(false)
 
-    const socket = useSocketStore()
-
     async function setUserInfo(token) {
         const data = await getUserInfo(token)
         userInfo.username = data.user.username;
         userInfo.user_uuid = data.user.uuid;
         userInfo.user_roles = data.user.roles
+
+        socket.auth = { token: getToken() }
         socket.connect()
     }
+
 
     function logout() {
         removeToken()
@@ -29,7 +30,6 @@ export const useUserStore = defineStore('user', () => {
         userInfo.user_roles = ""
 
         hasRoute.value = false
-        socket.disconnect()
     }
 
     function generatedRoute() {

@@ -33,7 +33,7 @@
         </div>
         <div class="field col-12 md:col-12">
             <label>Description</label>
-            <pr-editor v-model="description" readonly type="text"  editorStyle="height: 200px">
+            <pr-editor v-model="description" readonly type="text"  editorStyle="height: 20vh">
                 <template v-slot:toolbar>
                     <label></label>
                 </template>
@@ -45,7 +45,9 @@
 <script setup>
 import { watch, defineProps, ref } from 'vue';
 
-const props = defineProps(['selectedTask'])
+const props = defineProps({
+    selectedTask: Object
+})
 
 const description = ref()
 
