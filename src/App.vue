@@ -4,8 +4,7 @@
       <AppTopBar></AppTopBar>
       <router-view/>
     </div>
-    <div v-else class="w-screen h-screen bg-auto bg-no-repeat bg-center bg-primary border-round h-20rem w-full" style="background-image: url('assets/back_1.png');">
-
+    <div v-else>
       <router-view/>
     </div>
   </div>

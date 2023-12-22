@@ -6,16 +6,13 @@ import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useUserStore } from '@/stores/UserStore';
 import { useSocketStore } from '@/stores/SocketStore'
-import { getListUsers } from '@/api/auth';
 
-export async function useTaskDetail(isEdit) {
+export function useTaskDetail(isEdit, dropdownUsers) {
     const route = useRoute()
     const router = useRouter()
     const toast = useToast()
     const userStore = useUserStore()
     const useSocket = useSocketStore()
-
-    const dropdownUsers = await getListUsers()
 
     const validationSchema = toTypedSchema(
         zod.object({
@@ -67,7 +64,6 @@ export async function useTaskDetail(isEdit) {
         }
     })
     return {
-        dropdownUsers,
         onSubmit,
         setValues
     }

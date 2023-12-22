@@ -3,8 +3,8 @@
                  :options="options"
                  type="text"
                  :class="{ 'p-invalid': errorMessage }"
-                 :optionLabel="optLabel"
-                 :optionValue="optValue"/>
+                 :optionLabel="optionLabel"
+                 :optionValue="optionValue"/>
     <small class="p-error" id="text-error">{{ errorMessage || '&nbsp;' }}</small>
 </template>
 
@@ -12,7 +12,7 @@
 import { defineProps } from 'vue';
 import { useField } from 'vee-validate';
 
-const props = defineProps(['name', 'options', "optLabel", "optValue"])
+const props = defineProps(['name', 'options', "optionLabel", "optionValue"])
 
 const { value, errorMessage } = useField(() => props.name)
 
