@@ -29,7 +29,7 @@ export function useTaskTable(emit) {
         router.push({ path: "/task/" + uuid })
     }
 
-    const onRowClick = (event) => {
+    const onRowClick = (event) => { 
         emit('selectTask', event.data)
     }
 

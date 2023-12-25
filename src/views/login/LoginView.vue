@@ -68,7 +68,7 @@ const onSubmit = handleSubmit(async () => {
 
     setToken(data.token);
 
-    Router.push({ path: "/dashboard" })
+    Router.push({ name: "Dashboard" })
   } catch (error) {
       if (error.response) {
         toast.add({ severity: 'error', summary: 'Error', detail: `${error.response.data.message}`, life: 3000 });

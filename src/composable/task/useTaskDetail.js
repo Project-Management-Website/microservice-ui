@@ -5,14 +5,12 @@ import * as zod from "zod"
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useUserStore } from '@/stores/UserStore';
-import { useSocketStore } from '@/stores/SocketStore'
 
 export function useTaskDetail(isEdit, dropdownUsers) {
     const route = useRoute()
     const router = useRouter()
     const toast = useToast()
     const userStore = useUserStore()
-    const useSocket = useSocketStore()
 
     const validationSchema = toTypedSchema(
         zod.object({
@@ -51,9 +49,6 @@ export function useTaskDetail(isEdit, dropdownUsers) {
                     ...taskForm,
                     status: 'To do',
                 }
-                useSocket.socket.emit("notif:create", {
-                    receiver: assigneeInfo.uuid,
-                })
 
                 await createTask(tempTask)
             }

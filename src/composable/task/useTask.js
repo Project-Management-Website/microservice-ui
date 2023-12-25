@@ -1,5 +1,5 @@
 import { getListTask } from '@/api/task';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from "primevue/usetoast"
 import { formatDatetime } from "@/utils/datetime"
@@ -76,7 +76,7 @@ export function useTask() {
                 item.created_at = formatDatetime(item.created_at)
                 item.due_date = formatDatetime(item.due_date)
             })
-            
+            console.log(tasks, "//", tempTasks)
             tasks.value = tempTasks.data.items
             totalRecords.value = tempTasks.data.numTask;
         } catch (error) {
@@ -124,6 +124,10 @@ export function useTask() {
     function updateLoading(bool) {
         loading.value = bool
     }
+
+    watch(tasks, () => {
+        console.log(tasks.value)
+    })
 
     return {
         tasks,

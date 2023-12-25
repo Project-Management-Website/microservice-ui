@@ -73,9 +73,9 @@ export const routes = [
     },
     {
         path: '/:catchAll(.*)',
-        redirect: { name: 'Dashboard' },
+        redirect: { name: 'Test' },
         meta: { 
-
+            requireAuth: false
         },
     },
 ]
@@ -85,29 +85,31 @@ const router = createRouter({
     routes,
 })
 
-router.beforeEach(async (from, to, next) => {
+router.beforeEach(async (to, from, next) => {
     NProgress.start()
 
-    const userStore = useUserStore()
     const token = getToken()
-
-    if(!to.requireAuth && token) {
-        console.log(to)
-        next({ name: "Dashboard" })
+    console.log(from, "//",to)
+    console.log(to.meta.requireAuth, token)
+    if(!to.meta.requireAuth && token) {
+        next({ name: 'Dashboard' })
         return
     }
-
-    if(to.requireAuth && !token) {
-        next({ name: "Login" })
+    console.log(token)
+    if(to.meta.requireAuth && !token) {
+    console.log(from)
+    console.log("end")
+        next({ name: 'Login' })
         return
     }
     console.log("1")
-    console.log("2")
-    if(!to.requireAuth && !token) {
+    if(!to.meta.requireAuth && !token) {
         next()
         return
     }
     console.log("3")
+    const userStore = useUserStore()
+
     if(userStore.userInfo.username !== "") {
         next()
         return
@@ -115,7 +117,6 @@ router.beforeEach(async (from, to, next) => {
     console.log("4")
     await userStore.setUserInfo(token)
     next()
-    return
 
     // if (!token || userStore.hasRoute) return
     // try {
