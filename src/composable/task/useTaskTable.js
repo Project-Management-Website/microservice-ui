@@ -1,12 +1,10 @@
 import { removeTask } from '@/api/task';
 import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast';
-import { useTask } from './useTask';
 
 export function useTaskTable(emit) {
     const router = useRouter()
     const toast = useToast()
-    const { fetchList } = useTask()
 
     const getSeverity = (priority) => {
         switch (priority) {
@@ -37,11 +35,9 @@ export function useTaskTable(emit) {
         emit('updateLoading', true)
         try {
             await removeTask(data.uuid)
-            await fetchList()
+            emit('fetchList')
         } catch (error) {
             toast.add({ severity: 'error', summary: 'Error', detail: `${error.message}`, life: 3000 });
-        } finally {
-            emit('updateLoading', false)
         }
     }
 

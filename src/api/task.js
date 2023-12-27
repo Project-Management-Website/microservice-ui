@@ -51,3 +51,14 @@ export async function removeTask(uuid) {
     method: 'delete',
   })
 }
+
+export async function getListComments(query) {
+  const apiURL = process.env.APP_PROJECT_API || "http://localhost:3001"
+  const url = apiURL + '/comment'
+
+  return request({
+    url,
+    method: 'get',
+    params: query
+  })
+}

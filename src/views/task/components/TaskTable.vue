@@ -1,3 +1,21 @@
+<script setup>
+import { useTaskTable } from "@/composable/task/useTaskTable"
+import { defineProps, defineEmits } from "vue";
+
+const props = defineProps({
+    listTasks: Array,
+    loading: Boolean,
+})
+const emit = defineEmits(['selectTask', 'updateLoading', 'fetchList'])
+
+const {
+        getSeverity,
+        onRowDoubleClick,
+        onRowClick,
+        deleteRow,
+    } = useTaskTable(emit)
+
+</script>
 <template>
     <pr-dataTable size="small" :value="listTasks" filterDisplay="row" :loading="props.loading" class="mx-5 w-8 border-round" selectionMode="single" @rowDblclick="onRowDoubleClick" @rowSelect="onRowClick">
         <template #empty> No tasks found. </template>
@@ -22,22 +40,3 @@
         </pr-column>
     </pr-dataTable>
 </template>
-
-<script setup>
-import { useTaskTable } from "@/composable/task/useTaskTable"
-import { defineProps, defineEmits } from "vue";
-
-const props = defineProps({
-    listTasks: Array,
-    loading: Boolean,
-})
-const emit = defineEmits(['selectTask', 'updateLoading'])
-
-const {
-        getSeverity,
-        onRowDoubleClick,
-        onRowClick,
-        deleteRow,
-    } = useTaskTable(emit)
-
-</script>

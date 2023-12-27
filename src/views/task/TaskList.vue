@@ -15,7 +15,7 @@
     </div>
     <div class="flex card mt-3">
         <div class="w-10">
-            <TaskTable class="w-11" @select-task="showTaskInfo" @update-loading="updateLoading" :listTasks="tasks" :loading="loading"/>
+            <TaskTable class="w-11" @select-task="showTaskInfo" @update-loading="updateLoading" @fetch-list="fetchList" :listTasks="tasks" :loading="loading"/>
             <pr-paginator @page="handlePageChange" class="mt-3" :rows="pagination.limit" :totalRecords="totalRecords"></pr-paginator>
         </div>
         <div class="card shadow-2 indigo-300 p-4 border-round w-4 mr-5">
@@ -58,12 +58,12 @@ const {
 
 onMounted(async () => {
     try {
-            await fetchList()
-            selectedTask.value = tasks.value[0] || {}
-        } catch (error) {
-            toast.add({ severity: 'error', summary: 'Error', detail: `${error}`, life: 3000 });
-        } finally {
-            loading.value = false
-        }
+        await fetchList()
+        selectedTask.value = tasks.value[0] || {}
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: `${error}`, life: 3000 });
+    } finally {
+        loading.value = false
+    }
 })
 </script>
