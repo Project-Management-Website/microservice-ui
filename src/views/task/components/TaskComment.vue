@@ -5,36 +5,44 @@ import { useRoute } from 'vue-router';
 import { useTaskComment } from '@/composable/task/useTaskComment'
 
 const route = useRoute()
+const taskId = route.params.uuid
 const {
     comments,
-    fetchComment
-} = useTaskComment()
+    newCommentText,
+    fetchComment,
+    postComment
+} = useTaskComment(taskId)
 
 onMounted(async () => {
-    socket.emit("comment:enter", route.params)
+    console.log(taskId)
+    socket.emit("comment:enter", taskId)
+    socket.on("comment:send", (data) => {
+        comments.value.push(data);
+    })
+
     const query = {
-        taskId: route.params.uuid
+        taskId,
     }
     await fetchComment(query)
 })
 
 onUnmounted(() => {
-    socket.emit("comment:leave", route.params)
+    socket.emit("comment:leave", taskId)
 })
 </script>
 
 <template>
     <div class="comment-container">
-        <div v-for="(comment, index) in comments" :key="index" class="comment">
+        <div v-for="(comment, index) in comments" :key="index">
         <p>
-            <strong>{{ comment.sender.username }}:</strong> {{ comments.content }}
+            <strong>{{ comment.sender.username }}:</strong> {{ comment.content }}
         </p>
         </div>
 
         <!-- Input for New Comment -->
         <div class="new-comment">
         <input v-model="newCommentText" placeholder="Type your comment..." />
-        <button @click="addComment">Add Comment</button>
+        <button @click="postComment">Add Comment</button>
         </div>
     </div>
 </template>

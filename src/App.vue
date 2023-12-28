@@ -23,6 +23,9 @@ const toast = useToast()
 socket.on("notif:notify", (data) => {
   toast.add({ severity: 'info', summary: 'Info', detail: `${data.message}`, life: 3000 });
 })
+socket.on("comment:notify", (data) => {
+  toast.add({ severity: 'info', summary: 'Info', detail: `${data.message}`, life: 3000 });
+})
 </script>
 
 <script>
