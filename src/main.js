@@ -33,6 +33,7 @@ import BadgeDirective from 'primevue/badgedirective';
 import Editor from 'primevue/editor';
 import Paginator from 'primevue/paginator';
 import { createPinia } from 'pinia';
+import ScrollPanel from 'primevue/scrollpanel';
 
 const pinia = createPinia()
 const app = createApp(App)
@@ -62,6 +63,7 @@ app.component('pr-calendar', Calendar)
 app.component('pr-menu', Menu)
 app.component('pr-editor', Editor)
 app.component('pr-paginator', Paginator)
+app.component('pr-scrollPanel', ScrollPanel)
 
 app.directive('badge', BadgeDirective);
 

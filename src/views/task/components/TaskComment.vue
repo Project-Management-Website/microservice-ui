@@ -21,7 +21,7 @@ onMounted(async () => {
     })
 
     const query = {
-        taskId,
+        task: taskId,
     }
     await fetchComment(query)
 })
@@ -32,47 +32,16 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="comment-container">
-        <div v-for="(comment, index) in comments" :key="index">
-        <p>
-            <strong>{{ comment.sender.username }}:</strong> {{ comment.content }}
-        </p>
+    <pr-scrollPanel lastScrollTop="10" style="width: 100%; height: 42rem">
+        <div class="w-full mx-2" v-for="(comment, index) in comments" :key="index">
+            <p>
+                <strong class="flex mb-2">{{ comment.sender.username }}</strong>
+                {{ comment.content }}
+            </p>
         </div>
-
-        <!-- Input for New Comment -->
-        <div class="new-comment">
-        <input v-model="newCommentText" placeholder="Type your comment..." />
-        <button @click="postComment">Add Comment</button>
-        </div>
+    </pr-scrollPanel>
+    <div class="w-full mx-2">
+        <pr-inputText @keydown.enter="postComment" class="w-10" v-model="newCommentText" placeholder="Type your comment..." />
+        <pr-button class="ml-3" @click="postComment" icon="pi pi-send" severity="info" rounded></pr-button>
     </div>
 </template>
-<style scoped>
-.comment-container {
-width: 300px;
-margin: auto;
-}
-
-.comment {
-margin-bottom: 10px;
-padding: 8px;
-background-color: #f0f0f0;
-}
-
-.new-comment {
-margin-top: 20px;
-display: flex;
-}
-
-.new-comment input {
-flex: 1;
-padding: 8px;
-}
-
-.new-comment button {
-background-color: #3498db;
-color: #fff;
-border: none;
-padding: 8px;
-cursor: pointer;
-}
-</style>

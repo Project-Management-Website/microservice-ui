@@ -29,8 +29,8 @@ export function useTaskComment(taskId) {
             content: newCommentText.value,
             task: taskId,
         }
-        console.log(newCommentData)
         socket.emit("comment:post", newCommentData)
+        newCommentText.value = ""
     }
 
     return {
